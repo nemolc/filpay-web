@@ -323,17 +323,18 @@ const buildMessage = async (info) => {
             }
         );
         buildData.value = res.data
+        let newAdd = props.dialogName == "修改质押人地址" || props.dialogName == "修改收益人地址" ? props.parentForm.addr : addr.value
         if (currencyActive.value == 0) {
             res.data.forEach(item => {
                 pushData.value += Number(item.estimated_cost)
                 item.msg_cid = new Uint8Array(_decodeBase64(item.msg_cid));
-                item.signature = uint8arrayToBase64(Sigs.SignByPrivateKey(addr_type, password.value, isEqualAddress(addr.value, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //私钥签名
+                item.signature = uint8arrayToBase64(Sigs.SignByPrivateKey(addr_type, password.value, isEqualAddress(newAdd, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //私钥签名
             });
         } else {
             res.data.forEach(item => {
                 pushData.value += Number(item.estimated_cost)
                 item.msg_cid = new Uint8Array(_decodeBase64(item.msg_cid));
-                item.signature = uint8arrayToBase64(Sigs.SignByKeywords(addr_type, passwordStr.value, isEqualAddress(addr.value, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //助记词签名
+                item.signature = uint8arrayToBase64(Sigs.SignByKeywords(addr_type, passwordStr.value, isEqualAddress(newAdd, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //助记词签名
             });
         }
         console.log(pushData.value)

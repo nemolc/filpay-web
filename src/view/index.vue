@@ -7,7 +7,7 @@
           您放心的合约支付管家
         </div>
         <div>
-          <el-input v-model="input" placeholder="输入节点检索" class="searchInput">
+          <el-input v-model="input" placeholder="输入节点号查看或配置" class="searchInput">
             <template #suffix>
               <el-icon style="font-size: 26px" @click="searchValue">
                 <search />

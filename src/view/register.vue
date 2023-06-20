@@ -3,7 +3,7 @@
     <el-icon>
       <bell />
     </el-icon>
-    您还未配置智能合约，请按以下流程进行配置。若已配置请忽略！
+    未查询到已生效的合约配置，请根据提示配置需要的合约参数。如配置已提交但在上链中，请忽略以下内容并等待上链更新！
   </div>
   <div class="container">
     <div class="tops"><img src="@/assets/zjc.png" alt="">注：合约配置仅OWNER角色可执行。钱包地址需使用去中心化钱包地址（持有私钥/助记词），交易所地址不可使用。</div>
@@ -18,7 +18,7 @@
             value-format="YYYY-MM-DD HH:mm:ss" placeholder="请输入授权截止期限" style="width: 400px">
           </el-date-picker>
           <div class="tips">
-            <el-tooltip class="item" effect="light" content="建议设置为当前日期+扇区生命周期的两倍" placement="right">
+            <el-tooltip class="item" effect="light" content="建议设置为扇区最迟到期日+210天以上" placement="right">
               <el-icon>
                 <question-filled />
               </el-icon>
@@ -31,7 +31,7 @@
               <span>FIL</span>
             </template></el-input>
             <div class="tips">
-            <el-tooltip class="item" effect="light" content="建议设置为大于质押币与产出收益总和，若不易计算可设置为无限大" placement="right">
+            <el-tooltip class="item" effect="light" content="建议按照质押池+150%预期产出进行设置，若节点号不再重复封装可设置为无限大" placement="right">
               <el-icon>
                 <question-filled />
               </el-icon>
