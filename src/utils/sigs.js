@@ -1,6 +1,5 @@
 import {CoinType, newBLSAddress, newDelegatedAddress, newSecp256k1Address} from "@glif/filecoin-address";
 import {getBytes, keccak256, Wallet} from "ethers";
-import { ElMessage } from 'element-plus'
 import __wbg_init, {
     blsPublicKey,
     blsSign,
@@ -55,7 +54,6 @@ export class Sigs {
             case "delegated":
                 return sigs[1].Sign(msg)
             default:
-                ElMessage.error("illegal private type " + privateType)
                 throw new Error("illegal private type " + privateType)
         }
     }
@@ -91,7 +89,6 @@ export class Sigs {
                 case "delegated":
                     return sigs[1].Sign(msg)
                 default:
-                    ElMessage.error("illegal private type " + privateType)
                     throw new Error("illegal private type " + privateType)
             }
         } catch (e) {
@@ -110,7 +107,6 @@ export class Sigs {
                 privateKey = getBytes(privateKey)
                 break;
             default:
-                ElMessage.error("Invalid private key")
                 throw new Error("Invalid private key")
         }
 
@@ -121,7 +117,6 @@ export class Sigs {
         var key_info = JSON.parse(BaseNone.fromHex(keyInfo).toUTF8());
 
         if (!key_info.hasOwnProperty("Type") && !key_info.hasOwnProperty("PrivateKey")) {
-            ElMessage.error("illegal private key")
             throw new Error("illegal private key")
         }
 
@@ -135,7 +130,6 @@ export class Sigs {
                 return new Delegated(network, privateKey)
 
             default:
-                ElMessage.error("illegal private key")
                 throw new Error("illegal private key")
         }
     }
