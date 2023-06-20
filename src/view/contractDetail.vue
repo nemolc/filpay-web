@@ -1,13 +1,5 @@
 <template>
   <div class="container" v-loading="loading">
-    <!-- <div class="container-header">
-      <div>
-        节点可用余额（FIL）
-        <el-button class="primary" @click="change('提币')">提币</el-button>
-        <el-button class="info">转入质押币</el-button>
-      </div>
-      <div class="num" v-if="dataform.miner_available_balance">{{ (dataform.miner_available_balance/(10**18)).toFixed(4) }}</div>
-    </div> -->
     <div class="container-content">
       <div class="formInfo" style="padding-bottom: 0">
         <div class="item">
@@ -16,23 +8,23 @@
         </div>
         <div class="item">
           <div>质押总额</div>
-          <div v-if="dataform.invested_funds">{{ (dataform.invested_funds/(10**18)).toFixed(4) }} FIL</div>
+          <div v-if="dataform.invested_funds">{{ convert_fil(dataform.invested_funds)}}</div>
         </div>
         <div class="item">
           <div>质押起始释放高度</div>
-          <div>{{ dataform.invested_release_height }}</div>
+          <div>{{ dataform.invested_release_height }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ getDate1 }}</div>
         </div>
         <div class="item">
           <div>收益起始释放高度</div>
-          <div>{{ dataform.beneficiary_release_height }}</div>
+          <div>{{ dataform.beneficiary_release_height }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ getDate2 }}</div>
         </div>
         <div class="item">
           <div>收益结束释放高度</div>
-          <div>{{ dataform.expiration }}</div>
+          <div>{{ dataform.expiration }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ getDate3 }}</div>
         </div>
         <div class="item">
           <div>收益期间释放上限</div>
-          <div v-if="dataform.quota">{{ (dataform.quota/(10**18)).toFixed(4) }} FIL</div>
+          <div v-if="dataform.quota">{{ convert_fil(dataform.quota) }}</div>
         </div>
       </div>
       <div class="formInfo">
@@ -48,7 +40,7 @@
         <div class="title">质押人信息</div>
         <div class="item">
           <div>质押币总数</div>
-          <div v-if="dataform.invested_funds">{{ (dataform.invested_funds/(10**18)).toFixed(4) }} FIL</div>
+          <div v-if="dataform.invested_funds">{{ convert_fil(dataform.invested_funds) }} </div>
         </div>
         <div class="item" v-for="(item, i) in dataform.investors_info" :key="i">
           <div>质押人{{ i + 1 }}</div>
@@ -65,8 +57,12 @@
 import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router';
+import { useStore } from "vuex";
 import { get } from '@/utils/request'
 import signature from "@/components/signature.vue"
+import { getTimestamp, getHeight } from "@/utils/date"
+import { convert_fil } from "@/utils/tool"
+const store = useStore();
 const Route = useRoute();
 // const getAssetsFile = (url) => {
 //   return new URL(`@/assets/${url}`, import.meta.url).href
@@ -74,7 +70,12 @@ const Route = useRoute();
 const form=reactive({
   addr:"",
   addArr:[]
+
 })
+
+const getDate1=ref("")
+const getDate2=ref("")
+const getDate3=ref("")
 const visible = ref(false)
 const dataform = ref('')
 const dialogName = ref("")
@@ -91,6 +92,10 @@ const contractdetails = async () => {
     const res = await get(`${sessionStorage.getItem("network")}/${Route.query.id}/contract_details`);
     dataform.value=res.data
     loading.value = false
+    const { start_at, block_delay_secs } = store.state.headInfo;
+    getDate1.value=getTimestamp(start_at, block_delay_secs, res.data.invested_release_height)
+    getDate2.value=getTimestamp(start_at, block_delay_secs, res.data.beneficiary_release_height)
+    getDate3.value=getTimestamp(start_at, block_delay_secs, res.data.expiration)
   } catch (error) {
     ElMessage.warning(error.msg);
     loading.value = false

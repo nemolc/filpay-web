@@ -16,13 +16,13 @@
       <el-button v-if="isShow && isRegister" @click="registerImmediately">立即配置智能合约</el-button>
       <div class="network">
         <!-- <el-dropdown @command="handleCommand"> -->
-          <span class="el-dropdown-link">
-            <img src="@/assets/network.png" alt="" />{{ activeNetwork }}&nbsp;
-            <!-- <el-icon>
+        <span class="el-dropdown-link">
+          <img src="@/assets/network.png" alt="" />{{ activeNetwork }}&nbsp;
+          <!-- <el-icon>
               <arrow-down />
             </el-icon> -->
-          </span>
-          <!-- <template #dropdown>
+        </span>
+        <!-- <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item :command="item.name" v-for="(item, i) in dataform" :key="i">{{ item.name
               }}</el-dropdown-item>
@@ -34,7 +34,7 @@
   </div>
 </template>
 <script setup>
-import { ref, computed, onMounted, inject } from "vue";
+import { ref, computed, onMounted, inject, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from 'vuex';
 import { ElMessage } from 'element-plus'
@@ -58,6 +58,9 @@ const init = () => {
 const registerImmediately = () => {
   router.push({ path: "/register" });
 };
+watch(() => Route.query.id, (newValue) => {
+  input.value = newValue
+}, { immediate: true });
 onMounted(() => {
   systeminfo()
 })
@@ -81,16 +84,12 @@ const systeminfo = async () => {
 }
 const searchValue = () => {
   if (input.value.trim() == "") return
-  if(Route.name=='register'){
-    contractdetails()
-  }else{
-    router.push({ path: "/contractDetail", query: { id: input.value } });
-    Route.name == "contractDetail" && reload()
-  }
+  contractdetails()
 };
 const contractdetails = async () => {
   try {
     await get(`${sessionStorage.getItem("network")}/${input.value}/contract_details`);
+    router.push({ path: "/contractDetail", query: { id: input.value } });
   } catch (error) {
     if (error.code == 404) {
       router.push({ path: "/register", query: { show: 'ture' } });
@@ -121,6 +120,7 @@ const handleCommand = (command) => {
   .header-logo {
     font-weight: 400;
     cursor: pointer;
+
     img {
       height: 30px;
     }

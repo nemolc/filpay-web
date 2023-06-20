@@ -190,11 +190,6 @@ const form = reactive({
 onMounted(() => {
   setTimeout(()=>{
     show.value = Route.query.show
-    if (show.value) {
-      setTimeout(() => {
-        show.value = false
-      }, 4000)
-    }
   },500)
 })
 const addbeneficiarys = () => {

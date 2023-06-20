@@ -119,16 +119,18 @@ const submit = async () => {
     pushData.value = 0
     if (props.dialogName == "合约配置") {
         num.value = 0
+        let str=props.parentForm.new_quota * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: props.parentForm.miner_id,
             msg_type: "updateBeneficiary",
             params: {
                 new_expiration: height, //生效期限 
-                new_quota: props.parentForm.new_quota, //提币上限
+                new_quota: String(str), //提币上限
             }
         })
     } else if (props.dialogName == "変更Beneficiary地址") {
+        let str=props.parentForm.new_quota * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: Route.query.id,
@@ -137,7 +139,7 @@ const submit = async () => {
                 proposal_type: 1,
                 proposal_details: {
                     new_addr: props.parentForm.new_addr,
-                    new_quota: props.parentForm.new_quota,
+                    new_quota: String(str),
                     new_expiration: height,
                 }
             }
@@ -181,6 +183,7 @@ const submit = async () => {
             }
         })
     } else if (props.dialogName == "更新质押池总额") {
+        let str=props.parentForm.new_invested_funds * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: Route.query.id,
@@ -188,7 +191,7 @@ const submit = async () => {
             params: {
                 proposal_type: 5,
                 proposal_details: {
-                    new_invested_funds: props.parentForm.new_invested_funds
+                    new_invested_funds: String(str)
                 }
             }
         })
@@ -203,12 +206,13 @@ const submit = async () => {
             }
         })
     } else if (props.dialogName == "提币") {
+        let str=props.parentForm.amount * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: Route.query.id,
             msg_type: "withdraw",
             params: {
-                amount: props.parentForm.amount
+                amount: String(str)
             }
         })
     } else if (props.dialogName == "修改质押人地址") {

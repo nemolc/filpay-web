@@ -21,6 +21,7 @@
 import { ref, reactive, onMounted } from "vue";
 import signature from "@/components/signature.vue"
 import { useStore } from "vuex";
+import { convert_fil } from "@/utils/tool"
 const store = useStore();
 const target = ref(null)
 const visible = ref(false)
@@ -38,14 +39,6 @@ const submit = async () => {
     visible.value = true
   }
 };
-const convert_fil=(value)=> {
-    var fil = (value / (10 ** 18)).toFixed(4);
-    if (fil>0.0001){
-        return fil+" FIL"
-    }
-    var nanoFil=(value / (10 ** 9)).toFixed(4);
-    return nanoFil+" nanoFIL"
-}
 const props = defineProps({
   details: {
     type: String,

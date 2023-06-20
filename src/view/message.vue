@@ -12,19 +12,13 @@
 import { ref,onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from 'vuex';
+import { convert_fil } from "@/utils/tool"
 const router = useRouter();
 const sxf = ref(0);
 const Route=useRoute()
 const store = useStore();
 const scan_msg_url=ref('')
-const convert_fil=(value)=> {
-    var fil = (value / (10 ** 18)).toFixed(4);
-    if (fil>0.0001){
-        return fil+" FIL"
-    }
-    var nanoFil=(value / (10 ** 9)).toFixed(4);
-    return nanoFil+" nanoFIL"
-}
+
 onMounted(() => {
     setTimeout(()=>{
       scan_msg_url.value = store.state.headInfo.scan_msg_url.replace(/{cid}/g,Route.query.msgid)
