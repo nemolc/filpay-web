@@ -53,7 +53,7 @@
       </div>
       <div class="item" v-if="details.proposal_type == 5">
         <div>更新质押池</div>
-        <span>{{ details.details.new_invested_funds }} FIL</span>
+        <span>{{ convert_fil(details.details.new_invested_funds) }} </span>
       </div>
     </div>
     <div class="vote" v-if="details.stat == 0">
@@ -86,6 +86,7 @@ import { ref, reactive, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { get } from "@/utils/request";
 import { ElMessage } from 'element-plus'
+import { convert_fil } from "@/utils/tool"
 import signature from "@/components/signature.vue"
 const Route = useRoute()
 const isshow = ref(false);
