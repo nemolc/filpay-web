@@ -75,7 +75,6 @@ const systeminfo = async () => {
       sessionStorage.setItem("network", activeNetwork.value);
     }
   } catch (error) {
-    console.log(error,1)
     ElMessage.warning(error.msg);
   }
   // input.value=Route.query.id

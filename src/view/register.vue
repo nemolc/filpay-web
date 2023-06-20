@@ -96,7 +96,10 @@
         </div>
         <div class="title">质押人信息（质押退还）</div>
         <el-form-item label="质押币总额" prop="invested_funds">
-          <el-input style="width: 400px" v-model="form.invested_funds" placeholder="请输入总质押币"></el-input>
+          <el-input style="width: 400px" v-model="form.invested_funds" placeholder="请输入总质押币">
+            <template #suffix>
+              <span>FIL</span>
+            </template></el-input>
         </el-form-item>
         <el-form-item :label="'质押人' + (i + 1)" v-for="(item, i) in form.investors_allot_ratios" :key="i"
           :prop="`investors_allot_ratios[${i}].addr`" :rules="[
@@ -185,12 +188,14 @@ const form = reactive({
 });
 
 onMounted(() => {
-  show.value = Route.query.show
-  if (show.value) {
-    setTimeout(() => {
-      show.value = false
-    }, 4000)
-  }
+  setTimeout(()=>{
+    show.value = Route.query.show
+    if (show.value) {
+      setTimeout(() => {
+        show.value = false
+      }, 4000)
+    }
+  },500)
 })
 const addbeneficiarys = () => {
   form.beneficiarys_allot_ratios.push({
@@ -261,7 +266,7 @@ const submit = async () => {
         sum += Number(item.ratio);
       });
       if (sum != 100) {
-        ElMessage.warning("收益人比例分配的不均匀，请重新分配");
+        ElMessage.warning("收益人比例总和需为100%，请重新分配");
         return;
       }
     }
@@ -272,7 +277,7 @@ const submit = async () => {
         sum += Number(item.ratio);
       });
       if (sum != 100) {
-        ElMessage.warning("质押人比例分配的不均匀，请重新分配");
+        ElMessage.warning("质押人比例总和需为100%，请重新分配");
         return;
       }
     }

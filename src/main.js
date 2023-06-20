@@ -14,8 +14,7 @@ const app = createApp(App)
 app.use(router)
 app.use(store)
 app.use(ElementPlus,{locale})
-app.mount('#app')
-
 Object.keys(ElIcon).forEach((key) => {
     app.component(key, ElIcon[key])
 })
+app.mount('#app')

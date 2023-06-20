@@ -1,6 +1,6 @@
-import { CoinType, newBLSAddress, newDelegatedAddress, newSecp256k1Address } from "@glif/filecoin-address";
+import {CoinType, newBLSAddress, newDelegatedAddress, newSecp256k1Address} from "@glif/filecoin-address";
+import {getBytes, keccak256, Wallet} from "ethers";
 import { ElMessage } from 'element-plus'
-import { getBytes, keccak256, Wallet } from "ethers";
 import __wbg_init, {
     blsPublicKey,
     blsSign,
@@ -9,12 +9,19 @@ import __wbg_init, {
     secp256k1PublicKey,
     secp256k1Sign,
 } from "./filecoin_signer_wasm.js";
-import { BaseNone } from "basenone";
+import {BaseNone} from "basenone";
 
-let filecoinSignerWasmUrl = undefined
+
+var filecoinSignerWasmUrl = undefined
 
 export function isEqualAddress(addr0, addr1) {
-    return addr1.indexOf(addr0)
+    let arr = []
+    if (addr1.length > 0) {
+        addr1.forEach(item => {
+            arr.push(item.substring(1))
+        })
+        return arr.indexOf(addr0.substring(1))
+    }
 }
 
 export class Sigs {
@@ -52,6 +59,27 @@ export class Sigs {
                 throw new Error("illegal private type " + privateType)
         }
     }
+
+    static async getAddressesByPrivateKey(network, privateKey) {
+        await __wbg_init(filecoinSignerWasmUrl);
+        try {
+            var sigs = Sigs.fromSecp256k1(network, privateKey);
+            var publicAddresses = [];
+
+            for (var i = 0; i < sigs.length; i++) {
+                publicAddresses.push(sigs[i].GetAddress());
+            }
+
+            return publicAddresses;
+        } catch (e) {
+            var sig = Sigs.fromKeyInfo(network, privateKey)
+            var publicAddresses = [];
+
+            publicAddresses.push(sig.GetAddress());
+            return publicAddresses;
+        }
+    }
+
     static async SignByPrivateKey(network, privateKey, privateType, msg) {
         await __wbg_init(filecoinSignerWasmUrl)
         try {
@@ -88,31 +116,6 @@ export class Sigs {
 
         return [new Secp256k1(network, privateKey), new Delegated(network, privateKey)];
     }
-
-    static async getAddressesByPrivateKey(network, privateKey) {
-        await __wbg_init(filecoinSignerWasmUrl);
-        try {
-            console.log("begin to fromSecp256k1")
-            var sigs = Sigs.fromSecp256k1(network, privateKey);
-            console.log("finish fromSecp256k1")
-            var publicAddresses = [];
-
-            for (var i = 0; i < sigs.length; i++) {
-                publicAddresses.push(sigs[i].GetAddress());
-            }
-
-            return publicAddresses;
-        } catch (e) {
-            console.log("begin to fromKeyInfo")
-            var sig = Sigs.fromKeyInfo(network, privateKey)
-            console.log("finish fromKeyInfo")
-            var publicAddresses = [];
-
-            publicAddresses.push(sig.GetAddress());
-            return publicAddresses;
-        }
-    }
-
 
     static fromKeyInfo(network, keyInfo) {
         var key_info = JSON.parse(BaseNone.fromHex(keyInfo).toUTF8());
