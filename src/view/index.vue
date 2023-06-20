@@ -35,6 +35,7 @@ const searchValue = () => {
 const contractdetails = async () => {
   try {
     await get(`${sessionStorage.getItem("network")}/${input.value}/contract_details`);
+    router.push({ path: "/contractDetail", query: { id: input.value } });
   } catch (error) {
     if (error.code == 404) {
       router.push({ path: "/register", query: { show: 'ture' } });
