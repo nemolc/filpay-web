@@ -94,19 +94,19 @@ const colse = () => {
     dialogVisible.value = false
     emit('update:show', false)
 }
-const submit = () => {
+const submit = async () => {
     if (currencyActive.value == 0) {
         if (addr.value.trim()=="" || password.value.trim() == "") {
             ElMessage.warning("钱包地址和私钥签名不能为空")
             return
         }
-        addrs.value = Sigs.getAddressesByPrivateKey(addr_type, password.value) //私钥
+        addrs.value =await Sigs.getAddressesByPrivateKey(addr_type, password.value) //私钥
     } else {
         if (addr.value.trim()=="" || passwordStr.value.trim() == "") {
             ElMessage.warning("钱包地址和助记词不能为空")
             return
         }
-        addrs.value = Sigs.getAddressByKeywords(addr_type, passwordStr.value) //助记词
+        addrs.value = await Sigs.getAddressByKeywords(addr_type, passwordStr.value) //助记词
     }
     let newAdd = props.dialogName == "修改质押人地址" || props.dialogName == "修改收益人地址" ? props.parentForm.addr : addr.value
     if (isEqualAddress(newAdd, addrs.value) == -1) {
@@ -325,16 +325,16 @@ const buildMessage = async (info) => {
         buildData.value = res.data
         let newAdd = props.dialogName == "修改质押人地址" || props.dialogName == "修改收益人地址" ? props.parentForm.addr : addr.value
         if (currencyActive.value == 0) {
-            res.data.forEach(item => {
+            res.data.forEach(async item => {
                 pushData.value += Number(item.estimated_cost)
                 item.msg_cid = new Uint8Array(_decodeBase64(item.msg_cid));
-                item.signature = uint8arrayToBase64(Sigs.SignByPrivateKey(addr_type, password.value, isEqualAddress(newAdd, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //私钥签名
+                item.signature = uint8arrayToBase64(await Sigs.SignByPrivateKey(addr_type, password.value, isEqualAddress(newAdd, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //私钥签名
             });
         } else {
-            res.data.forEach(item => {
+            res.data.forEach(async item => {
                 pushData.value += Number(item.estimated_cost)
                 item.msg_cid = new Uint8Array(_decodeBase64(item.msg_cid));
-                item.signature = uint8arrayToBase64(Sigs.SignByKeywords(addr_type, passwordStr.value, isEqualAddress(newAdd, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //助记词签名
+                item.signature = uint8arrayToBase64(await Sigs.SignByKeywords(addr_type, passwordStr.value, isEqualAddress(newAdd, addrs.value) == 0 ? 'secp256k1' : 'delegated', item.msg_cid)) //助记词签名
             });
         }
         console.log(pushData.value)
