@@ -40,7 +40,7 @@ import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router';
 import { post } from '../utils/request'
 import { Sigs, isEqualAddress } from '../utils/sigs'
-import { getTimestamp, getHeight } from "../utils/date"
+import { FilStrToAttoStr } from "../utils/tool"
 import { _decodeBase64, uint8arrayToBase64 } from "../utils/base64"
 const getAssetsFile = (url) => {
     return new URL(`../assets/${url}`, import.meta.url).href
@@ -117,18 +117,16 @@ const submit = async () => {
     pushData.value = 0
     if (props.dialogName == "合约配置") {
         num.value = 0
-        let str=props.parentForm.new_quota * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: props.parentForm.miner_id,
             msg_type: "updateBeneficiary",
             params: {
                 new_expiration: props.parentForm.new_expiration, //生效期限 
-                new_quota: String(str), //提币上限
+                new_quota: FilStrToAttoStr(props.parentForm.new_quota), //提币上限
             }
         })
     } else if (props.dialogName == "変更Beneficiary地址") {
-        let str=props.parentForm.new_quota * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: Route.query.id,
@@ -137,7 +135,7 @@ const submit = async () => {
                 proposal_type: 1,
                 proposal_details: {
                     new_addr: props.parentForm.new_addr,
-                    new_quota: String(str),
+                    new_quota: FilStrToAttoStr(props.parentForm.new_quota),
                     new_expiration: props.parentForm.new_expiration,
                 }
             }
@@ -181,7 +179,6 @@ const submit = async () => {
             }
         })
     } else if (props.dialogName == "更新质押池总额") {
-        let str=props.parentForm.new_invested_funds * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: Route.query.id,
@@ -189,7 +186,7 @@ const submit = async () => {
             params: {
                 proposal_type: 5,
                 proposal_details: {
-                    new_invested_funds: String(str)
+                    new_invested_funds: FilStrToAttoStr(props.parentForm.new_invested_funds)
                 }
             }
         })
@@ -204,13 +201,12 @@ const submit = async () => {
             }
         })
     } else if (props.dialogName == "提币") {
-        let str=props.parentForm.amount * (10 ** 18)
         buildMessage({
             from: addr.value,
             miner_id: Route.query.id,
             msg_type: "withdraw",
             params: {
-                amount: String(str)
+                amount: FilStrToAttoStr(props.parentForm.amount)
             }
         })
     } else if (props.dialogName == "修改质押人地址") {
