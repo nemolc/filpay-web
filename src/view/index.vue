@@ -26,6 +26,7 @@
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { get } from '@/utils/request'
+import { ElMessage } from 'element-plus'
 const router = useRouter();
 const input = ref(null);
 const searchValue = () => {
@@ -40,7 +41,7 @@ const contractdetails = async () => {
     if (error.code == 404) {
       router.push({ path: "/register", query: { show: 'ture' } });
     } else {
-      router.push({ path: "/contractDetail", query: { id: input.value } });
+      ElMessage.warning(error.msg);
     }
   }
 }
