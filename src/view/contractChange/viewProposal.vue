@@ -2,7 +2,7 @@
   <div v-show="!isshow">
     <div class="card" v-for="(item, i) in proposals"
       :class="item.stat == -1 ? 'bgUnderway' : item.stat == 1 ? 'bgSuccess' : item.stat == 2 ? 'bgError' : ''" :key="i"
-      @click="openInfo(item)" v-loading="loading">
+      @click="openInfo(item,i)" v-loading="loading">
       <div class="item">
         <img src="@/assets/icon1.png" v-if="item.proposal_type == 5" alt="">
         <img src="@/assets/icon2.png" v-if="item.proposal_type == 4" alt="">
@@ -94,6 +94,7 @@ const visible = ref(false)
 const loading = ref(false);
 const form = reactive({
   approved: false,
+  activeIndex:0,
 });
 const active = ref(null);
 const proposals = ref([]);
@@ -139,7 +140,8 @@ const proposalsFun = async () => {
     loading.value = false;
   }
 };
-const openInfo = (item) => {
+const openInfo = (item,i) => {
+  form.activeIndex=i
   details.value = item;
   isshow.value = true;
 };

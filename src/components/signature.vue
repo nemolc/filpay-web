@@ -201,7 +201,7 @@ const submit = async () => {
             miner_id: Route.query.id,
             msg_type: "vote",
             params: {
-                proposal_id: 1,
+                proposal_id: props.parentForm.activeIndex,
                 approved: props.parentForm.approved
             }
         })
