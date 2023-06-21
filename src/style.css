@@ -2,7 +2,10 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  word-wrap: break-word;
+  word-break: normal;
 }
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -12,10 +15,11 @@
   background: #fafbfc;
   height: 100vh;
 }
-img{
+
+img {
   vertical-align: middle;
 }
-.el-form-item__label{
+
+.el-form-item__label {
   color: #000 !important;
 }
-

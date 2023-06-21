@@ -1,8 +1,8 @@
 <template>
-  <div v-show="!isshow">
+  <div v-show="!isshow" v-loading="loading" class="minheight">
     <div class="card" v-for="(item, i) in proposals"
       :class="item.stat == -1 ? 'bgUnderway' : item.stat == 1 ? 'bgSuccess' : item.stat == 2 ? 'bgError' : ''" :key="i"
-      @click="openInfo(item,i)" v-loading="loading">
+      @click="openInfo(item,i)">
       <div class="item">
         <img src="@/assets/icon1.png" v-if="item.proposal_type == 5" alt="">
         <img src="@/assets/icon2.png" v-if="item.proposal_type == 4" alt="">
@@ -71,7 +71,7 @@
     </div>
 
     <div class="voteResult">
-      <div>投出结果</div>
+      <div>投票结果</div>
       <ul>
         <li v-for="(item, i) in details.vote_stat" :key="i">{{ item.addr }}<span>{{
           item.stat == 0 ? "未投票" : item.stat == 1 ? "同意" : "反对"
@@ -218,12 +218,11 @@ const openInfo = (item,i) => {
 
   div,
   li {
-    padding: 0 20px;
+    padding: 15px 20px;
     font-size: 14px;
     list-style: none;
     border-top: 1px solid #d3d6d8;
-    height: 60px;
-    line-height: 60px;
+    line-height: 30px;
   }
 
   span {
@@ -305,7 +304,10 @@ const openInfo = (item,i) => {
 .error {
   background: #E94141;
 }
-
+.minheight{
+  min-height: calc(100vh - 150px);
+  margin-top: 26px;
+}
 .container {
   background: #ffffff;
   box-shadow: 0px 3px 6px 1px rgba(160, 160, 160, 0.16);

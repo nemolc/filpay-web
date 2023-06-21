@@ -14,8 +14,11 @@
           <el-input v-model="form.miner_id" placeholder="请输入节点编号" style="width: 400px"></el-input>
         </el-form-item>
         <el-form-item label="Beneficiary地址" prop="new_expiration">
-          <el-date-picker v-model="form.new_expiration" type="datetime" :disabledDate="disabledDateFun"
-            value-format="YYYY-MM-DD HH:mm:ss" placeholder="请输入授权截止期限" style="width: 400px">
+          <el-input v-model="form.new_expiration" placeholder="请输入区块高度"
+            @blur="getTime(form.new_expiration, 3)" style="width: 180px"></el-input>
+          <img src="@/assets/change.png" alt="" />
+          <el-date-picker v-model="form.date3" type="datetime" @change="setHeight(3)" placeholder="请输入授权截止期限"
+            style="width: 180px">
           </el-date-picker>
           <div class="tips">
             <el-tooltip class="item" effect="light" content="建议设置为扇区最迟到期日+210天以上" placement="right">
@@ -30,7 +33,7 @@
             <template #suffix>
               <span>FIL</span>
             </template></el-input>
-            <div class="tips">
+          <div class="tips">
             <el-tooltip class="item" effect="light" content="建议按照质押池+150%预期产出进行设置，若节点号不再重复封装可设置为无限大" placement="right">
               <el-icon>
                 <question-filled />
@@ -151,7 +154,7 @@ const rules = reactive({
   ],
   miner_id: [{ required: true, message: "请输入节点编号", trigger: "blur" }],
   new_expiration: [
-    { required: true, message: "请输入授权截止期限", trigger: "blur" },
+    { required: true, message: "请输入区块高度", trigger: "blur" },
   ],
   beneficiary_release_height: [
     { required: true, message: "请输入区块高度", trigger: "blur" },
@@ -161,9 +164,6 @@ const rules = reactive({
   ],
   new_quota: [{ required: true, message: "请输入提币额度上限", trigger: "blur" }],
 });
-const disabledDateFun = (time) => {
-  return time.getTime() < Date.now() - 1 * 24 * 3600 * 1000 + 20 * 60 * 1000;
-};
 const form = reactive({
   miner_id: "",
   invested_funds: "", //质押金额 此字符串是个大数值
@@ -173,6 +173,7 @@ const form = reactive({
   new_quota: "",
   date1: "",
   date2: "",
+  date3:"",
   beneficiarys_allot_ratios: [
     {
       addr: "",
@@ -188,9 +189,9 @@ const form = reactive({
 });
 
 onMounted(() => {
-  setTimeout(()=>{
+  setTimeout(() => {
     show.value = Route.query.show
-  },500)
+  }, 500)
 })
 const addbeneficiarys = () => {
   form.beneficiarys_allot_ratios.push({
@@ -224,30 +225,29 @@ const getTime = (height, type) => {
   const d = getTimestamp(start_at, block_delay_secs, height);
   if (type == 1) {
     form.date1 = d;
-  } else {
+  } else if (type == 2) {
     form.date2 = d;
+  } else {
+    form.date3 = d;
   }
 };
 const setHeight = (type) => {
   const { start_at, block_delay_secs } = store.state.headInfo;
+  let date = new Date(type == 1 ? form.date1 : type == 2 ? form.date2 : form.date3);
+  const { height, revision_time } = getHeight(
+    start_at,
+    block_delay_secs,
+    date.getTime() / 1000
+  );
   if (type == 1) {
-    let date = new Date(form.date1);
-    const { height, revision_time } = getHeight(
-      start_at,
-      block_delay_secs,
-      date.getTime() / 1000
-    );
     form.beneficiary_release_height = height;
     form.date1 = revision_time;
-  } else {
-    let date = new Date(form.date2);
-    const { height, revision_time } = getHeight(
-      start_at,
-      block_delay_secs,
-      date.getTime() / 1000
-    );
+  } else if (type == 2){
     form.invested_release_height = height;
     form.date2 = revision_time;
+  }else{
+    form.new_expiration = height;
+    form.date3 = revision_time;
   }
 };
 const submit = async () => {

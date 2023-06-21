@@ -71,7 +71,7 @@ const store = useStore();
 const Route=useRoute()
 const isshow = ref(false);
 const proposals = ref([{
-  name:"変更Beneficiary地址",
+  name:"变更Beneficiary地址",
   proposal_type:1
 },{
   name:"变更产出收益释放高度",

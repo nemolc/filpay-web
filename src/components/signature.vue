@@ -113,8 +113,6 @@ const submit = async () => {
         ElMessage.warning(currencyActive.value == 0 ? "您输入的钱包地址和私钥不匹配" : "您输入的钱包地址和助记词不匹配")
         return
     }
-    let date = new Date(props.parentForm.new_expiration);
-    const { height } = getHeight(start_at, block_delay_secs, date.getTime() / 1000)
     loading.value = true
     pushData.value = 0
     if (props.dialogName == "合约配置") {
@@ -125,7 +123,7 @@ const submit = async () => {
             miner_id: props.parentForm.miner_id,
             msg_type: "updateBeneficiary",
             params: {
-                new_expiration: height, //生效期限 
+                new_expiration: props.parentForm.new_expiration, //生效期限 
                 new_quota: String(str), //提币上限
             }
         })
@@ -140,7 +138,7 @@ const submit = async () => {
                 proposal_details: {
                     new_addr: props.parentForm.new_addr,
                     new_quota: String(str),
-                    new_expiration: height,
+                    new_expiration: props.parentForm.new_expiration,
                 }
             }
         })

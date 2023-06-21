@@ -8,7 +8,7 @@
         </div>
         <div class="item">
           <div>质押总额</div>
-          <div v-if="dataform.invested_funds">{{ convert_fil(dataform.invested_funds)}}</div>
+          <div v-if="dataform.invested_funds">{{ convert_fil(dataform.invested_funds) }}</div>
         </div>
         <div class="item">
           <div>质押起始释放高度</div>
@@ -32,7 +32,8 @@
         <div class="item" v-for="(item, i) in dataform.beneficiarys_info" :key="i">
           <div>收益人{{ i + 1 }}</div>
           <div>
-            {{ ((item.ratio/10000)*100).toFixed(2) }}%<span>{{ item.addr?item.addr:'未知' }}</span><el-button class="info" @click="change(item.addr,dataform.beneficiarys_info,'修改收益人地址')">修改</el-button>
+            {{ ((item.ratio / 10000) * 100).toFixed(2) }}%<span>{{ item.addr ? item.addr : '未知' }}</span><el-button class="info"
+              @click="change(item.addr, dataform.beneficiarys_info, '修改收益人地址')">修改</el-button>
           </div>
         </div>
       </div>
@@ -45,7 +46,8 @@
         <div class="item" v-for="(item, i) in dataform.investors_info" :key="i">
           <div>质押人{{ i + 1 }}</div>
           <div>
-            {{ ((item.ratio/10000)*100).toFixed(2) }}%<span>{{ item.addr?item.addr:'未知' }}</span><el-button class="info" @click="change(item.addr,dataform.investors_info,'修改质押人地址')">修改</el-button>
+            {{ ((item.ratio / 10000) * 100).toFixed(2) }}%<span>{{ item.addr ? item.addr : '未知' }}</span><el-button class="info"
+              @click="change(item.addr, dataform.investors_info, '修改质押人地址')">修改</el-button>
           </div>
         </div>
       </div>
@@ -67,43 +69,43 @@ const Route = useRoute();
 // const getAssetsFile = (url) => {
 //   return new URL(`@/assets/${url}`, import.meta.url).href
 // }
-const form=reactive({
-  addr:"",
-  addArr:[]
+const form = reactive({
+  addr: "",
+  addArr: []
 
 })
 
-const getDate1=ref("")
-const getDate2=ref("")
-const getDate3=ref("")
+const getDate1 = ref("")
+const getDate2 = ref("")
+const getDate3 = ref("")
 const visible = ref(false)
 const dataform = ref('')
 const dialogName = ref("")
 const loading = ref(false)
 
 onMounted(() => {
+    loading.value = true
     setTimeout(()=>{
       contractdetails()
     },200)
 })
 const contractdetails = async () => {
-  loading.value = true
   try {
     const res = await get(`${sessionStorage.getItem("network")}/${Route.query.id}/contract_details`);
-    dataform.value=res.data
+    dataform.value = res.data
     loading.value = false
     const { start_at, block_delay_secs } = store.state.headInfo;
-    getDate1.value=getTimestamp(start_at, block_delay_secs, res.data.invested_release_height)
-    getDate2.value=getTimestamp(start_at, block_delay_secs, res.data.beneficiary_release_height)
-    getDate3.value=getTimestamp(start_at, block_delay_secs, res.data.expiration)
+    getDate1.value = getTimestamp(start_at, block_delay_secs, res.data.invested_release_height)
+    getDate2.value = getTimestamp(start_at, block_delay_secs, res.data.beneficiary_release_height)
+    getDate3.value = getTimestamp(start_at, block_delay_secs, res.data.expiration)
   } catch (error) {
     ElMessage.warning(error.msg);
     loading.value = false
   }
 }
-const change = (addr,arr,name) => {
-  form.addArr=arr
-  form.addr=addr
+const change = (addr, arr, name) => {
+  form.addArr = arr
+  form.addr = addr
   dialogName.value = name;
   visible.value = true
 }
@@ -123,6 +125,10 @@ const change = (addr,arr,name) => {
 }
 </style>
 <style lang="less" scoped>
+.container {
+  min-height: calc(100vh - 150px);
+}
+
 .container-header,
 .container-content {
   background: #ffffff;
@@ -144,7 +150,7 @@ const change = (addr,arr,name) => {
 }
 
 .container-header {
-  
+
   .num {
     font-size: 32px;
     margin-top: 5px;
@@ -155,6 +161,7 @@ const change = (addr,arr,name) => {
 .container-content {
   padding: 0 34px 40px 34px;
   margin-top: 26px;
+
   .ruleForm {
     color: #000;
   }
