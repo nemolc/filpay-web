@@ -74,7 +74,7 @@ const systeminfo = async () => {
       activeNetwork.value = sessionStorage.getItem('network')
     } else {
       activeNetwork.value = dataform.value[0].name
-      store.commit('set_headInfo', activeNetwork.value)
+      store.commit('set_headInfo', dataform.value[0])
       sessionStorage.setItem("network", activeNetwork.value);
     }
   } catch (error) {
