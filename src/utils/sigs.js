@@ -13,21 +13,45 @@ import {BaseNone} from "basenone";
 
 var filecoinSignerWasmUrl = undefined
 
+export function SetFilecoinSignerWasmUrl(s) {
+    filecoinSignerWasmUrl = s
+}
+
 export function isEqualAddress(addr0, addr1) {
-    let arr = []
-    if (addr1.length > 0) {
-        addr1.forEach(item => {
-            arr.push(item.substring(1))
-        })
-        return arr.indexOf(addr0.substring(1))
+    if (addr0.length !== addr1.length) {
+        return false;
+    }
+
+    if (addr0.length === 0) {
+        return true;
+    }
+
+    return (addr0.substring(1) === addr1.substring(1));
+}
+
+export function getTimestamp(start_at, block_delay_secs, height) {
+    return start_at + (block_delay_secs * height)
+}
+
+export function getHeight(start_at, block_delay_secs, curr_time) {
+    let duration = curr_time - start_at;
+    if (duration < 0) {
+        throw new Error("illegal time")
+    }
+
+    let height = parseInt(duration / block_delay_secs)
+    return {
+        "height": height,
+        "revision_time": getTimestamp(start_at, block_delay_secs, height)
     }
 }
+
 
 export class Sigs {
     static async getAddressByKeywords(network, keywords) {
         await __wbg_init(filecoinSignerWasmUrl);
         var privateKey = Sigs._getPrivateKeyByKeywords(keywords);
-        var sigs = Sigs.fromPrivateKey2(network, privateKey);
+        var sigs = Sigs.fromSecp256k1(network, privateKey);
         var publicAddresses = [];
 
         for (var i = 0; i < sigs.length; i++) {
@@ -37,11 +61,6 @@ export class Sigs {
         return publicAddresses;
     }
 
-    static _getPrivateKeyByKeywords(keywords) {
-        keywords = keywords.join(" ");
-        return Wallet.fromPhrase(keywords).privateKey;
-
-    }
 
     static async SignByKeywords(network, keywords, privateType, msg) {
         await __wbg_init(filecoinSignerWasmUrl)
@@ -95,6 +114,12 @@ export class Sigs {
             var sig = Sigs.fromKeyInfo(network, privateKey)
             return sig.Sign(msg)
         }
+    }
+
+    static _getPrivateKeyByKeywords(keywords) {
+        keywords = keywords.join(" ");
+        return Wallet.fromPhrase(keywords).privateKey;
+
     }
 
     static fromSecp256k1(network, privateKey) {
