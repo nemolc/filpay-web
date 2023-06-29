@@ -89,7 +89,7 @@ const getDate1 = ref("");
 const getDate = ref("");
 const form = reactive({
 	approved: false,
-	activeIndex: 0,
+	proposal_id: 0,
 });
 const active = ref(null);
 const proposals = ref([]);
@@ -160,7 +160,7 @@ const proposalsFun = async () => {
 	}
 };
 const openInfo = (item, i) => {
-	form.activeIndex = i;
+	form.proposal_id = item.proposal_id;
 	details.value = item;
 	isshow.value = true;
 	const { start_at, block_delay_secs } = store.state.headInfo;
