@@ -33,6 +33,8 @@
 			<div class="item" v-if="details.proposal_type == 3">
 				<div>新质押起始释放高度</div>
 				<span>{{ details.details.new_invested_release_height }}</span>
+				&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<span>{{ getDate1 }}</span>
 			</div>
 			<div v-if="details.proposal_type == 4">
 				<div class="item" v-for="(item, i) in details.details.new_allot_ratios" :key="i">
