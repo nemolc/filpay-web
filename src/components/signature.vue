@@ -336,7 +336,7 @@ const buildMessage = async (info) => {
 			res.data.forEach(async (item) => {
 				pushData.value += Number(item.estimated_cost);
 				item.msg_cid = new Uint8Array(_decodeBase64(item.msg_cid));
-				item.signature = uint8arrayToBase64(await Sigs.SignByKeywords(addr_type, passwordStr.value, isEqualAddress(newAdd, addrs.value) == 0 ? "secp256k1" : "delegated", item.msg_cid)); //助记词签名
+				item.signature = uint8arrayToBase64(await Sigs.SignByKeywords(addr_type, passwordStr.value.split(" "), isEqualAddress(newAdd, addrs.value) == 0 ? "secp256k1" : "delegated", item.msg_cid)); //助记词签名
 			});
 		}
 		console.log(pushData.value);
