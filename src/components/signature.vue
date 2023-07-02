@@ -132,7 +132,7 @@ const submit = async () => {
 			miner_id: props.parentForm.miner_id,
 			msg_type: "updateBeneficiary",
 			params: {
-				new_expiration: props.parentForm.new_expiration, //生效期限
+				new_expiration: Number(props.parentForm.new_expiration), //生效期限
 				new_quota: FilStrToAttoStr(props.parentForm.new_quota), //提币上限
 			},
 		});
