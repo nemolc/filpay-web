@@ -74,6 +74,7 @@
 					<el-input
 						style="width: 90px; margin: 0 10px"
 						v-model="item.ratio"
+						onkeyup="value=value.match(/\d+\.?\d{0,4}/)"
 						oninput="value=value.replace(/(^\.|[^\d\.])/g,'').replace('.','$#$').replace(/\./g,'').replace('$#$','.').replace(/^\d{3,}.*/,'100')"
 						placeholder="0"
 						><template #suffix> % </template>
@@ -112,6 +113,7 @@
 						style="width: 90px; margin: 0 10px"
 						v-model="item.ratio"
 						placeholder="0"
+						onkeyup="value=value.match(/\d+\.?\d{0,4}/)"
 						oninput="value=value.replace(/(^\.|[^\d\.])/g,'').replace('.','$#$').replace(/\./g,'').replace('$#$','.').replace(/^\d{3,}.*/,'100')"
 					>
 						<template #suffix> % </template></el-input
@@ -212,6 +214,37 @@ function FilStrToAttoStr(value) {
 	console.log("字符串", result.toString());
 	return result.toString();
 }
+function FilStrToAttoStrAndNum(value) {
+	if (typeof value !== "string") {
+		throw new Error("illegal parameter type:" + typeof value);
+	}
+
+	let values = value.split(".");
+	if (values.length === 0 || values.length > 2) {
+		throw new Error("illegal value: " + value);
+	}
+
+	let intPart = BigInt(values[0]) * BigInt(10 ** 4);
+	let fractionalPart = BigInt(0);
+	if (values.length > 1) {
+		let b = values[1];
+		if (b.length === 0) {
+			b = 0;
+		} else if (b.length > 4) {
+			b = b.substring(0, 4);
+		} else {
+			while (b.length < 4) {
+				b = b + "0";
+			}
+		}
+
+		fractionalPart = BigInt(b);
+	}
+
+	let result = intPart + fractionalPart;
+	return result.toString();
+}
+
 onMounted(() => {
 	setTimeout(() => {
 		show.value = Route.query.show;
@@ -278,9 +311,10 @@ const submit = async () => {
 			let hasRatio = [];
 			form.beneficiarys_allot_ratios.forEach((item) => {
 				item.ratio.trim() != "" && hasRatio.push(item.ratio);
-				sum += Number(item.ratio);
+				sum += Number(FilStrToAttoStrAndNum(item.ratio));
+				console.log("计算总和", sum);
 			});
-			if (sum != 100) {
+			if (sum != 1000000) {
 				ElMessage.warning("收益人比例总和需为100%，请重新分配");
 				return;
 			}
@@ -289,9 +323,9 @@ const submit = async () => {
 		if (form.investors_allot_ratios.length > 0) {
 			let sum = 0;
 			form.investors_allot_ratios.forEach((item) => {
-				sum += Number(item.ratio);
+				sum += Number(FilStrToAttoStrAndNum(item.ratio));
 			});
-			if (sum != 100) {
+			if (sum != 1000000) {
 				ElMessage.warning("质押人比例总和需为100%，请重新分配");
 				return;
 			}
