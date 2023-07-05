@@ -42,7 +42,7 @@ import { ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import { post } from "../utils/request";
 import { Sigs, isEqualAddress } from "../utils/sigs";
-import { FilStrToAttoStr } from "../utils/tool";
+import {FilStrToAttoStr, ratioToInt} from "../utils/tool";
 import { _decodeBase64, uint8arrayToBase64 } from "../utils/base64";
 const getAssetsFile = (url) => {
 	return new URL(`../assets/${url}`, import.meta.url).href;
@@ -279,8 +279,8 @@ const pushMessage = async (info) => {
 		} else {
 			let arr1 = JSON.parse(JSON.stringify(props.parentForm.beneficiarys_allot_ratios));
 			let arr2 = JSON.parse(JSON.stringify(props.parentForm.investors_allot_ratios));
-			arr1.forEach((item) => (item.ratio = parseInt((parseInt(item.ratio) / 100) * 10000)));
-			arr2.forEach((item) => (item.ratio = parseInt((parseInt(item.ratio) / 100) * 10000)));
+      arr1.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
+      arr2.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
 			buildMessage({
 				from: addr.value,
 				miner_id: props.parentForm.miner_id,
