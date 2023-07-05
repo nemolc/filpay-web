@@ -100,15 +100,6 @@ function FilStrToAttoStrAndNum(value) {
 	return result.toString();
 }
 const submit = async () => {
-	let sum = 0;
-	form.new_allot_ratios.forEach((item) => {
-		sum += Number(FilStrToAttoStrAndNum(item.ratio));
-		console.log("计算总和", sum);
-	});
-	if (sum != 1000000) {
-		ElMessage.warning("收益人比例总和需为100%，请重新分配");
-		return;
-	}
 	const valid = await target.value.validate();
 	if (valid) {
 		if (form.new_allot_ratios.length > 0) {

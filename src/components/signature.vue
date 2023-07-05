@@ -42,7 +42,7 @@ import { ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import { post } from "../utils/request";
 import { Sigs, isEqualAddress } from "../utils/sigs";
-import {FilStrToAttoStr, ratioToInt} from "../utils/tool";
+import { FilStrToAttoStr, ratioToInt } from "../utils/tool";
 import { _decodeBase64, uint8arrayToBase64 } from "../utils/base64";
 const getAssetsFile = (url) => {
 	return new URL(`../assets/${url}`, import.meta.url).href;
@@ -176,7 +176,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "变更收益人比例") {
 		let arr = JSON.parse(JSON.stringify(props.parentForm.new_allot_ratios));
-		arr.forEach((item) => (item.ratio = parseInt((parseInt(item.ratio) / 100) * 10000)));
+		arr.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
 		buildMessage({
 			from: addr.value,
 			miner_id: Route.query.id,
@@ -279,8 +279,8 @@ const pushMessage = async (info) => {
 		} else {
 			let arr1 = JSON.parse(JSON.stringify(props.parentForm.beneficiarys_allot_ratios));
 			let arr2 = JSON.parse(JSON.stringify(props.parentForm.investors_allot_ratios));
-      arr1.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
-      arr2.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
+			arr1.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
+			arr2.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
 			buildMessage({
 				from: addr.value,
 				miner_id: props.parentForm.miner_id,

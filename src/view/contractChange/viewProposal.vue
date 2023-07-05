@@ -40,7 +40,7 @@
 				<div class="item" v-for="(item, i) in details.details.new_allot_ratios" :key="i">
 					<div>收益人{{ i + 1 }}</div>
 					<div>{{ item.addr }}</div>
-					<span>{{ ((item.ratio / 10000) * 100).toFixed(2) }}%</span>
+					<span>{{ (item.ratio / 10000).toFixed(4) }}%</span>
 				</div>
 			</div>
 			<div class="item" v-if="details.proposal_type == 5">
