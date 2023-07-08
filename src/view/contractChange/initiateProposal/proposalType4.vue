@@ -14,7 +14,7 @@
 					v-model="item.ratio"
 					placeholder="0"
 					onkeyup="value=value.match(/\d+\.?\d{0,4}/)"
-					oninput="value=value.replace(/(^\.|[^\d\.])/g,'').replace('.','$#$').replace(/\./g,'').replace('$#$','.').replace(/^\d{3,}.*/,'100')"
+					oninput="value=value.replace(/(^\.|[^\d\.])/g,'').replace('.','$#$').replace(/\./g,'').replace('$#$','.').replace(/^\d{3,}.*/,'1000000')"
 					><template #suffix>%</template></el-input
 				>
 				<span class="el-icon-minus" @click="delbeneficiarys(i)">

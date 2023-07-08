@@ -69,6 +69,7 @@
 					:key="i"
 					:prop="`beneficiarys_allot_ratios[${i}].addr`"
 					:rules="[{ required: true, message: '请填写收益人地址', trigger: 'blur' }]"
+					@keyup="sumsSy"
 				>
 					<el-input style="width: 300px" v-model="item.addr" placeholder="请填写收益人地址"></el-input>
 					<el-input
@@ -92,6 +93,9 @@
 						</el-icon>
 					</span>
 					增加收益人
+					<div class="sum">
+						<span class="left_sum"> 合计： </span><span>{{ form.sums }}</span>
+					</div>
 				</div>
 				<div class="title">质押人信息（质押退还）</div>
 				<el-form-item label="质押币总额" prop="invested_funds">
@@ -107,6 +111,7 @@
 					:key="i"
 					:prop="`investors_allot_ratios[${i}].addr`"
 					:rules="[{ required: true, message: '请填写质押人地址', trigger: 'blur' }]"
+					@keyup="sumsST"
 				>
 					<el-input style="width: 300px" v-model="item.addr" placeholder="请填写质押人地址"></el-input>
 					<el-input
@@ -131,10 +136,20 @@
 						</el-icon>
 					</span>
 					增加质押人
+					<div class="sum">
+						<span class="left_sum"> 合计： </span><span>{{ form.sumsT }}</span>
+					</div>
 				</div>
 			</el-form>
 		</div>
-		<div class="submitForm"><el-button class="submit" @click="submit">提交</el-button><el-button @click="$router.go(-1)">返回</el-button></div>
+		<div class="submitForm">
+			<el-form-item>
+				<el-checkbox v-model="form.checked">我已确认所有钱包为去中心化钱包地址(持有私钥/助记词)</el-checkbox>
+			</el-form-item>
+			<el-button @click="submit" class="submit">提交</el-button>
+			<el-button @click="lookAmount">预览</el-button>
+			<el-button @click="$router.go(-1)">返回</el-button>
+		</div>
 		<signature :dialogName="'合约配置'" :parentForm="form" v-model:show="visible"></signature>
 	</div>
 </template>
@@ -168,6 +183,9 @@ const form = reactive({
 	date1: "",
 	date2: "",
 	date3: "",
+	sums: "",
+	sumsT: "",
+	checked: "",
 	beneficiarys_allot_ratios: [
 		{
 			addr: "",
@@ -213,6 +231,26 @@ function FilStrToAttoStr(value) {
 	console.log("字符串", result);
 	console.log("字符串", result.toString());
 	return result.toString();
+}
+function sumsSy() {
+	let sum = 0;
+	let hasRatio = [];
+	form.beneficiarys_allot_ratios.forEach((item) => {
+		item.ratio.trim() != "" && hasRatio.push(item.ratio);
+		sum += Number(FilStrToAttoStrAndNum(item.ratio));
+		console.log("计算总和", sum);
+	});
+	form.sums = sum / 10000 + "%";
+}
+function sumsST() {
+	let sum = 0;
+	let hasRatio = [];
+	form.investors_allot_ratios.forEach((item) => {
+		item.ratio.trim() != "" && hasRatio.push(item.ratio);
+		sum += Number(FilStrToAttoStrAndNum(item.ratio));
+		console.log("计算总和", sum);
+	});
+	form.sumsT = sum / 10000 + "%";
 }
 function FilStrToAttoStrAndNum(value) {
 	if (typeof value !== "string") {
@@ -265,15 +303,47 @@ const addinvestors = () => {
 const delbeneficiarys = (i) => {
 	if (form.beneficiarys_allot_ratios.length == 1) {
 		ElMessage.warning("最少保留一条信息");
+		let sum = 0;
+		let hasRatio = [];
+		form.beneficiarys_allot_ratios.forEach((item) => {
+			item.ratio.trim() != "" && hasRatio.push(item.ratio);
+			sum += Number(FilStrToAttoStrAndNum(item.ratio));
+			console.log("计算总和", sum);
+		});
+		form.sums = sum / 10000 + "%";
 	} else {
 		form.beneficiarys_allot_ratios.splice(i, 1);
+		let sum = 0;
+		let hasRatio = [];
+		form.beneficiarys_allot_ratios.forEach((item) => {
+			item.ratio.trim() != "" && hasRatio.push(item.ratio);
+			sum += Number(FilStrToAttoStrAndNum(item.ratio));
+			console.log("计算总和", sum);
+		});
+		form.sums = sum / 10000 + "%";
 	}
 };
 const delinvestors = (i) => {
 	if (form.investors_allot_ratios.length == 1) {
 		ElMessage.warning("最少保留一条信息");
+		let sum = 0;
+		let hasRatio = [];
+		form.investors_allot_ratios.forEach((item) => {
+			item.ratio.trim() != "" && hasRatio.push(item.ratio);
+			sum += Number(FilStrToAttoStrAndNum(item.ratio));
+			console.log("计算总和", sum);
+		});
+		form.sumsT = sum / 10000 + "%";
 	} else {
 		form.investors_allot_ratios.splice(i, 1);
+		let sum = 0;
+		let hasRatio = [];
+		form.investors_allot_ratios.forEach((item) => {
+			item.ratio.trim() != "" && hasRatio.push(item.ratio);
+			sum += Number(FilStrToAttoStrAndNum(item.ratio));
+			console.log("计算总和", sum);
+		});
+		form.sumsT = sum / 10000 + "%";
 	}
 };
 const getTime = (height, type) => {
@@ -304,6 +374,7 @@ const setHeight = (type) => {
 	}
 };
 const submit = async () => {
+	if (form.checked == false) return ElMessage.warning("请勾选我已确认所有钱包为去中心化钱包地址");
 	const valid = await target.value.validate();
 	if (valid) {
 		if (form.beneficiarys_allot_ratios.length > 0) {
@@ -312,6 +383,7 @@ const submit = async () => {
 			form.beneficiarys_allot_ratios.forEach((item) => {
 				item.ratio.trim() != "" && hasRatio.push(item.ratio);
 				sum += Number(FilStrToAttoStrAndNum(item.ratio));
+				form.sums = sum;
 				console.log("计算总和", sum);
 			});
 			if (sum != 1000000) {
@@ -324,6 +396,7 @@ const submit = async () => {
 			let sum = 0;
 			form.investors_allot_ratios.forEach((item) => {
 				sum += Number(FilStrToAttoStrAndNum(item.ratio));
+				form.sumsT = sum;
 			});
 			if (sum != 1000000) {
 				ElMessage.warning("质押人比例总和需为100%，请重新分配");
@@ -470,5 +543,13 @@ defineExpose({
 			color: #fff;
 		}
 	}
+}
+.sum {
+	width: 500px;
+	color: #7b7878;
+	float: left;
+}
+.left_sum {
+	margin-left: 206px;
 }
 </style>

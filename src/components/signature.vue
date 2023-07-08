@@ -119,7 +119,7 @@ const submit = async () => {
 		addrs.value = await Sigs.getAddressByKeywords(addr_type, passwordStr.value.split(" ")); //助记词
 	}
 	let newAdd = props.dialogName == "修改质押人地址" || props.dialogName == "修改收益人地址" ? props.parentForm.addr : addr.value;
-	if (isEqualAddress(newAdd, addrs.value) == -1) {
+	if (isEqualAddress(newAdd, addrs.value) == false) {
 		ElMessage.warning(currencyActive.value == 0 ? "您输入的钱包地址和私钥不匹配" : "您输入的钱包地址和助记词不匹配");
 		return;
 	}
@@ -128,7 +128,7 @@ const submit = async () => {
 	if (props.dialogName == "合约配置") {
 		num.value = 0;
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: props.parentForm.miner_id,
 			msg_type: "updateBeneficiary",
 			params: {
@@ -138,7 +138,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "変更Beneficiary地址") {
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "propose",
 			params: {
@@ -152,7 +152,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "变更产出收益释放高度") {
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "propose",
 			params: {
@@ -164,7 +164,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "变更质押退还释放高度") {
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "propose",
 			params: {
@@ -178,7 +178,7 @@ const submit = async () => {
 		let arr = JSON.parse(JSON.stringify(props.parentForm.new_allot_ratios));
 		arr.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "propose",
 			params: {
@@ -190,7 +190,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "更新质押池总额") {
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "propose",
 			params: {
@@ -202,7 +202,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "投票") {
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "vote",
 			params: {
@@ -212,7 +212,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "提币") {
 		buildMessage({
-			from: addr.value,
+			from: addr.value.trim(),
 			miner_id: Route.query.id,
 			msg_type: "withdraw",
 			params: {
@@ -230,7 +230,7 @@ const submit = async () => {
 		}
 		loading.value = true;
 		buildMessage({
-			from: props.parentForm.addr,
+			from: props.parentForm.addr.trim(),
 			miner_id: Route.query.id,
 			msg_type: "changeInvestor",
 			params: {
@@ -248,7 +248,7 @@ const submit = async () => {
 		}
 		loading.value = true;
 		buildMessage({
-			from: props.parentForm.addr,
+			from: props.parentForm.addr.trim(),
 			miner_id: Route.query.id,
 			msg_type: "changeBeneficiary",
 			params: {
@@ -282,7 +282,7 @@ const pushMessage = async (info) => {
 			arr1.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
 			arr2.forEach((item) => (item.ratio = parseInt(ratioToInt(item.ratio))));
 			buildMessage({
-				from: addr.value,
+				from: addr.value.trim(),
 				miner_id: props.parentForm.miner_id,
 				msg_type: "registerBeneficiary",
 				params: {
