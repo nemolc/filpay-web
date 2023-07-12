@@ -32,7 +32,7 @@
 				<div class="item" v-for="(item, i) in dataform.beneficiarys_info" :key="i">
 					<div>收益人{{ i + 1 }}</div>
 					<div>
-						{{ ((item.ratio / 10000)).toFixed(4) }}%<span>{{ item.addr ? item.addr : "未知" }}</span
+						{{ (item.ratio / 10000).toFixed(4) }}%<span>{{ item.addr ? item.addr : "未知" }}</span
 						><el-button class="info" @click="change(item.addr, dataform.beneficiarys_info, '修改收益人地址')">修改</el-button>
 					</div>
 				</div>
@@ -46,7 +46,7 @@
 				<div class="item" v-for="(item, i) in dataform.investors_info" :key="i">
 					<div>质押人{{ i + 1 }}</div>
 					<div>
-						{{ ((item.ratio / 10000)).toFixed(4) }}%<span>{{ item.addr ? item.addr : "未知" }}</span
+						{{ (item.ratio / 10000).toFixed(4) }}%<span>{{ item.addr ? item.addr : "未知" }}</span
 						><el-button class="info" @click="change(item.addr, dataform.investors_info, '修改质押人地址')">修改</el-button>
 					</div>
 				</div>
@@ -98,7 +98,12 @@ const contractdetails = async () => {
 		getDate2.value = getTimestamp(start_at, block_delay_secs, res.data.beneficiary_release_height);
 		getDate3.value = getTimestamp(start_at, block_delay_secs, res.data.expiration);
 	} catch (error) {
-		ElMessage.warning(error.msg);
+		if (error.code == 1101) {
+			dataform.value = error.data;
+		} else {
+			ElMessage.warning(error.msg);
+		}
+
 		loading.value = false;
 	}
 };

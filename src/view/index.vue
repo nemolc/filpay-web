@@ -23,12 +23,15 @@ import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { get } from "@/utils/request";
 import { ElMessage } from "element-plus";
+import { useStore } from "vuex";
+const store = useStore();
 const router = useRouter();
 const input = ref(null);
 var iptval = "";
 const searchValue = () => {
 	if (input.value && input.value.length > 0 && input.value.split(" ").join("").length > 0) {
 		iptval = input.value.trim();
+		store.state.code = iptval;
 	} else {
 		router.push({ path: "/register", query: { show: "ture" } });
 		return;
@@ -41,8 +44,13 @@ const contractdetails = async () => {
 		router.push({ path: "/contractDetail", query: { id: input.value } });
 	} catch (error) {
 		if (error.code == 404 || error.code == 1001) {
+			store.state.headTittle = "合约配置";
 			router.push({ path: "/register", query: { show: "ture" } });
+		} else if (error.code == 1101) {
+			store.state.headTittle = "合约多签";
+			router.push({ path: "/registertwo", query: { id: input.value } });
 		} else {
+			store.state.headTittle = "合约配置";
 			ElMessage.warning(error.msg);
 		}
 	}

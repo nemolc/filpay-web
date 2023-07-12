@@ -1,9 +1,15 @@
 <template>
-	<div class="collapse" :class="show ? 'collapseHeight' : ''">
+	<div class="collapse" v-if="store.state.headTittle != '合约多签'" :class="show ? 'collapseHeight' : ''">
 		<el-icon>
 			<bell />
 		</el-icon>
 		未查询到已生效的合约配置，请根据提示配置需要的合约参数。如配置已提交但在上链中，请忽略以下内容并等待上链更新！
+	</div>
+	<div class="collapse" v-else :class="show ? 'collapseHeight' : ''">
+		<el-icon>
+			<bell />
+		</el-icon>
+		合约需要Owner角色全部签名才能正式生成，合约配置者默认已签名，
 	</div>
 	<div class="container">
 		<div class="tops"><img src="@/assets/zjc.png" alt="" />注：合约配置仅OWNER角色可执行。钱包地址需使用去中心化钱包地址（持有私钥/助记词），交易所地址不可使用。</div>
@@ -151,19 +157,22 @@
 			<el-button @click="$router.go(-1)">返回</el-button>
 		</div>
 		<signature :dialogName="'合约配置'" :parentForm="form" v-model:show="visible"></signature>
+		<registershow :dialogName="'合约预览'" :parentForm2="form" v-model:show="visible_resgister"></registershow>
 	</div>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, nextTick } from "vue";
 import { ElMessage } from "element-plus";
 import { useRoute, useRouter } from "vue-router";
 import { getTimestamp, getHeight } from "@/utils/date";
 import { useStore } from "vuex";
 import signature from "@/components/signature.vue";
+import registershow from "@/components/registershow.vue";
 const store = useStore();
 const Route = useRoute();
 const show = ref(false);
 const visible = ref(false);
+const visible_resgister = ref(false);
 const target = ref(null);
 const rules = reactive({
 	invested_funds: [{ required: true, message: "请输入总质押币", trigger: "blur" }],
@@ -199,7 +208,6 @@ const form = reactive({
 		},
 	], //质押人信息
 });
-
 function FilStrToAttoStr(value) {
 	if (typeof value !== "string") {
 		throw new Error("illegal parameter type:" + typeof value);
@@ -228,8 +236,6 @@ function FilStrToAttoStr(value) {
 	}
 
 	let result = intPart + fractionalPart;
-	console.log("字符串", result);
-	console.log("字符串", result.toString());
 	return result.toString();
 }
 function sumsSy() {
@@ -238,7 +244,6 @@ function sumsSy() {
 	form.beneficiarys_allot_ratios.forEach((item) => {
 		item.ratio.trim() != "" && hasRatio.push(item.ratio);
 		sum += Number(FilStrToAttoStrAndNum(item.ratio));
-		console.log("计算总和", sum);
 	});
 	form.sums = sum / 10000 + "%";
 }
@@ -248,7 +253,6 @@ function sumsST() {
 	form.investors_allot_ratios.forEach((item) => {
 		item.ratio.trim() != "" && hasRatio.push(item.ratio);
 		sum += Number(FilStrToAttoStrAndNum(item.ratio));
-		console.log("计算总和", sum);
 	});
 	form.sumsT = sum / 10000 + "%";
 }
@@ -308,7 +312,6 @@ const delbeneficiarys = (i) => {
 		form.beneficiarys_allot_ratios.forEach((item) => {
 			item.ratio.trim() != "" && hasRatio.push(item.ratio);
 			sum += Number(FilStrToAttoStrAndNum(item.ratio));
-			console.log("计算总和", sum);
 		});
 		form.sums = sum / 10000 + "%";
 	} else {
@@ -318,7 +321,6 @@ const delbeneficiarys = (i) => {
 		form.beneficiarys_allot_ratios.forEach((item) => {
 			item.ratio.trim() != "" && hasRatio.push(item.ratio);
 			sum += Number(FilStrToAttoStrAndNum(item.ratio));
-			console.log("计算总和", sum);
 		});
 		form.sums = sum / 10000 + "%";
 	}
@@ -331,7 +333,6 @@ const delinvestors = (i) => {
 		form.investors_allot_ratios.forEach((item) => {
 			item.ratio.trim() != "" && hasRatio.push(item.ratio);
 			sum += Number(FilStrToAttoStrAndNum(item.ratio));
-			console.log("计算总和", sum);
 		});
 		form.sumsT = sum / 10000 + "%";
 	} else {
@@ -341,7 +342,6 @@ const delinvestors = (i) => {
 		form.investors_allot_ratios.forEach((item) => {
 			item.ratio.trim() != "" && hasRatio.push(item.ratio);
 			sum += Number(FilStrToAttoStrAndNum(item.ratio));
-			console.log("计算总和", sum);
 		});
 		form.sumsT = sum / 10000 + "%";
 	}
@@ -384,7 +384,6 @@ const submit = async () => {
 				item.ratio.trim() != "" && hasRatio.push(item.ratio);
 				sum += Number(FilStrToAttoStrAndNum(item.ratio));
 				form.sums = sum;
-				console.log("计算总和", sum);
 			});
 			if (sum != 1000000) {
 				ElMessage.warning("收益人比例总和需为100%，请重新分配");
@@ -404,6 +403,13 @@ const submit = async () => {
 			}
 		}
 		visible.value = true;
+	}
+};
+const lookAmount = async () => {
+	if (form.checked == false) return ElMessage.warning("请勾选我已确认所有钱包为去中心化钱包地址");
+	const valid = await target.value.validate();
+	if (valid) {
+		visible_resgister.value = true;
 	}
 };
 
