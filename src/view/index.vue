@@ -51,7 +51,8 @@ const contractdetails = async () => {
 			router.push({ path: "/registertwo", query: { id: input.value } });
 		} else {
 			store.state.headTittle = "合约配置";
-			ElMessage.warning(error.msg);
+			router.push({ path: "/register", query: { show: "ture" } });
+			// ElMessage.warning(error.msg);
 		}
 	}
 };

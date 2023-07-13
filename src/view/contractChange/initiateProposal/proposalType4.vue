@@ -8,7 +8,7 @@
 				:prop="`new_allot_ratios[${i}].addr`"
 				:rules="[{ required: true, message: '请填写收益人地址', trigger: 'blur' }]"
 			>
-				<el-input style="width: 300px" v-model="item.addr" placeholder="请填写收益人地址"></el-input>
+				<el-input style="width: 300px" v-model.trim="item.addr" placeholder="请填写收益人地址"></el-input>
 				<el-input
 					style="width: 90px; margin: 0 10px"
 					v-model="item.ratio"

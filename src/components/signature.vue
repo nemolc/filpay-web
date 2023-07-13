@@ -153,7 +153,7 @@ const submit = async () => {
 			params: {
 				proposal_type: 1,
 				proposal_details: {
-					new_addr: props.parentForm.new_addr,
+					new_addr: props.parentForm.new_addr.trim(),
 					new_quota: FilStrToAttoStr(props.parentForm.new_quota),
 					new_expiration: Number(props.parentForm.new_expiration),
 				},
