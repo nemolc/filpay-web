@@ -4,7 +4,7 @@
 			<div class="marb_10">
 				<div class="modify">
 					<p>{{ props.dialogName == "修改质押人地址" ? "现质押人地址" : props.dialogName == "修改收益人地址" ? "现收益人地址" : "钱包地址" }}</p>
-					<el-input v-model="addr" placeholder="请输入钱包地址" onkeyup="value=value.replace(/\s+/g, '')" style="width: 400px"></el-input>
+					<el-input v-model.trim="addr" placeholder="请输入钱包地址" onkeyup="value=value.replace(/\s+/g, '')" style="width: 400px"></el-input>
 				</div>
 				<div class="modify">
 					<p>签名</p>
@@ -13,7 +13,8 @@
 					</ul>
 				</div>
 				<div class="modify">
-					<el-input v-model="password" placeholder="请输入私钥" v-if="currencyActive == 0" style="width: 400px; margin-left: 137px"></el-input>
+					<el-input v-model.trim="password" v-if="password_visible == true" placeholder="请输入私钥" style="width: 400px; margin-left: 137px"></el-input>
+					<el-input v-model.trim="password2" @blur="sumsSy" placeholder="请输入私钥" v-if="currencyActive == 0" style="width: 400px; margin-left: 137px"></el-input>
 					<el-input
 						v-model="passwordStr"
 						placeholder="请输入您的助记词，每个单词之间以空格分隔。如：tissue hunt hip theme pond abandon flavor hand decline miss fog junior"
@@ -58,11 +59,15 @@ const addrs = ref([]);
 const num = ref(0);
 const pushData = ref(0);
 const buildData = ref([]);
-const password = ref("");
+var password = ref("");
+var password_visible = ref(false);
+
+var password2 = ref("");
 // 7b2254797065223a22736563703235366b31222c22507269766174654b6579223a22544e457251396b384f6a676a69796e726738702b6e416b77585a7a4f364669785244496e6d676142324a343d227d
 const passwordStr = ref("");
 // tissue hunt hip theme pond abandon flavor hand decline miss fog junior
 const dialogVisible = ref(false);
+
 const currencyActive = ref(0);
 const loading = ref(false);
 const props = defineProps({
@@ -106,13 +111,14 @@ const colse = () => {
 };
 const submit = async () => {
 	if (currencyActive.value == 0) {
-		if (addr.value.trim() == "" || password.value.trim() == "") {
+		console.log(addr.value, password);
+		if (!addr.value || !password) {
 			ElMessage.warning("钱包地址和私钥签名不能为空");
 			return;
 		}
 		addrs.value = await Sigs.getAddressesByPrivateKey(addr_type, password.value); //私钥
 	} else {
-		if (addr.value.trim() == "" || passwordStr.value.trim() == "") {
+		if (!addr.value || !passwordStr.value) {
 			ElMessage.warning("钱包地址和助记词不能为空");
 			return;
 		}
@@ -372,6 +378,18 @@ const buildMessage = async (info) => {
 const chooseCurrency = (i) => {
 	currencyActive.value = i;
 };
+function sumsSy() {
+	if (password2.value.length <= 20) {
+		password.value = password2.value;
+		return;
+	} else if (password2.value.length > 20) {
+		password = JSON.parse(JSON.stringify(password2));
+		const prefix = password2.value.toString().substr(0, 10);
+		const suffix = password2.value.toString().substr(password2.length - 10);
+		let middle = "******";
+		password2.value = prefix + middle + suffix;
+	}
+}
 </script>
 <style>
 .dialogInfo .el-input__prefix {
