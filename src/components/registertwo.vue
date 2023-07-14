@@ -20,7 +20,7 @@
 				</div>
 				<div class="item">
 					<div style="width: 100%">
-						<div style="width: 100%; margin-left: 200px; color: #606266">提币额度上限：{{ form.new_quota }}&nbsp;FIL</div>
+						<div style="width: 100%; margin-left: 200px; color: #606266">提币额度上限：{{ form.new_quota / 10 ** 18 }}&nbsp;FIL</div>
 					</div>
 				</div>
 
@@ -50,7 +50,7 @@
 				<div class="title">质押人信息（质押退还）</div>
 				<div class="item">
 					<div>质押币总额</div>
-					<div v-if="form.invested_funds">{{ form.invested_funds }}</div>
+					<div v-if="form.invested_funds">{{ form.invested_funds / 10 ** 18 }}</div>
 				</div>
 				<div class="item" v-for="(item, i) in form.investors_allot_ratios" :key="i">
 					<div>质押人{{ i + 1 }}</div>
@@ -121,6 +121,9 @@ const form = reactive({
 		},
 	], //质押人信息
 	signers: "",
+	multi_sig_addr: "",
+	update_beneficiary_tx_id: "",
+	register_beneficiary_tx_id: "",
 });
 const props = defineProps({
 	dialogName: {
@@ -131,7 +134,7 @@ const props = defineProps({
 		type: Boolean,
 		default: null,
 	},
-	parentForm2: {
+	parentForm: {
 		type: String,
 		default: null,
 	},
@@ -167,9 +170,10 @@ const contractdetails = async () => {
 		form.beneficiarys_allot_ratios = res.data.beneficiarys_info;
 		form.invested_funds = res.data.invested_funds;
 		form.investors_allot_ratios = res.data.investors_info;
-		form.miner_id = res.data.miner_id;
-		form.miner_id = res.data.miner_id;
-		form.miner_id = res.data.miner_id;
+		form.signers = res.data.signers;
+		form.multi_sig_addr = res.data.multi_sig_addr;
+		form.update_beneficiary_tx_id = res.data.update_beneficiary_tx_id;
+		form.register_beneficiary_tx_id = res.data.register_beneficiary_tx_id;
 	} catch (error) {
 		if (error.code == 1101) {
 			const { start_at, block_delay_secs } = store.state.headInfo;
@@ -185,6 +189,9 @@ const contractdetails = async () => {
 			form.invested_funds = error.data.invested_funds;
 			form.investors_allot_ratios = error.data.investors_info;
 			form.signers = error.data.signers;
+			form.multi_sig_addr = error.data.multi_sig_addr;
+			form.update_beneficiary_tx_id = error.data.update_beneficiary_tx_id;
+			form.register_beneficiary_tx_id = error.data.register_beneficiary_tx_id;
 		} else {
 			ElMessage.warning(error.msg);
 		}

@@ -278,7 +278,7 @@ const submit = async () => {
 			params: {
 				tx_type: "updateBeneficiary",
 				msig_addr: props.parentForm.multi_sig_addr, //多签地址
-				tx_id: 1, // 多签提案编号
+				tx_id: props.parentForm.miner_id, // 多签提案编号
 			},
 		});
 	}
@@ -383,6 +383,10 @@ function sumsSy() {
 		password.value = password2.value;
 		return;
 	} else if (password2.value.length > 20) {
+		const check = password2.value.toString().substr(10, 11);
+		if (check == "*") {
+			return;
+		}
 		password = JSON.parse(JSON.stringify(password2));
 		const prefix = password2.value.toString().substr(0, 10);
 		const suffix = password2.value.toString().substr(password2.length - 10);
