@@ -272,7 +272,7 @@ const submit = async () => {
 		});
 	} else if (props.dialogName == "合约多签") {
 		buildMessage({
-			from: props.parentForm.addr.trim(),
+			from: addr.value.trim(),
 			miner_id: props.parentForm.miner_id,
 			msg_type: "multisigApprove",
 			params: {
