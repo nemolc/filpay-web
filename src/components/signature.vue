@@ -111,12 +111,12 @@ const colse = () => {
 };
 const submit = async () => {
 	if (currencyActive.value == 0) {
-		console.log(addr.value, password);
+		console.log(addr.value, password._rawValue);
 		if (!addr.value || !password) {
 			ElMessage.warning("钱包地址和私钥签名不能为空");
 			return;
 		}
-		addrs.value = await Sigs.getAddressesByPrivateKey(addr_type, password.value); //私钥
+		addrs.value = await Sigs.getAddressesByPrivateKey(addr_type, password._rawValue); //私钥
 	} else {
 		if (!addr.value || !passwordStr.value) {
 			ElMessage.warning("钱包地址和助记词不能为空");
@@ -356,7 +356,7 @@ const buildMessage = async (info) => {
 			res.data.forEach(async (item) => {
 				pushData.value += Number(item.estimated_cost);
 				item.msg_cid = new Uint8Array(_decodeBase64(item.msg_cid));
-				item.signature = uint8arrayToBase64(await Sigs.SignByPrivateKey(addr_type, password.value, isEqualAddress(newAdd, addrs.value[0]) ? "secp256k1" : "delegated", item.msg_cid)); //私钥签名
+				item.signature = uint8arrayToBase64(await Sigs.SignByPrivateKey(addr_type, password._rawValue, isEqualAddress(newAdd, addrs.value[0]) ? "secp256k1" : "delegated", item.msg_cid)); //私钥签名
 			});
 		} else {
 			res.data.forEach(async (item) => {
