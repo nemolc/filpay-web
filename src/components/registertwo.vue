@@ -50,7 +50,7 @@
 				<div class="title">质押人信息（质押退还）</div>
 				<div class="item">
 					<div>质押币总额</div>
-					<div v-if="form.invested_funds">{{ convert_fil(form.invested_funds) }}</div>
+					<div v-if="form.invested_funds">{{ form.invested_funds }}</div>
 				</div>
 				<div class="item" v-for="(item, i) in form.investors_allot_ratios" :key="i">
 					<div>质押人{{ i + 1 }}</div>
