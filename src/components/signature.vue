@@ -60,6 +60,7 @@ const new_addr = ref("");
 // f1ll5sbovf56rg3ba3keshbis7zahn3yurc3uj45y
 const addrs = ref([]);
 const num = ref(0);
+const numTimes = ref(0);
 const pushData = ref(0);
 const buildData = ref([]);
 var password = ref("");
@@ -108,6 +109,7 @@ const currency = reactive([
 ]);
 const colse = () => {
 	num.value = 0;
+	numTimes.value = 0;
 	loading.value = false;
 	dialogVisible.value = false;
 	emit("update:show", false);
@@ -274,6 +276,7 @@ const submit = async () => {
 			},
 		});
 	} else if (props.dialogName == "合约多签") {
+		numTimes.value = 0;
 		loading.value = false;
 		const signer = props.parentForm.signers.find((signer) => signer.addr === addr.value);
 
@@ -290,16 +293,6 @@ const submit = async () => {
 					tx_type: "updateBeneficiary",
 					msig_addr: props.parentForm.multi_sig_addr, //多签地址
 					tx_id: props.parentForm.update_beneficiary_tx_id, // 多签提案编号
-				},
-			});
-			buildMessage({
-				from: addr.value,
-				miner_id: props.parentForm.miner_id,
-				msg_type: "multisigApprove",
-				params: {
-					tx_type: "registerBeneficiary",
-					msig_addr: props.parentForm.multi_sig_addr, //多签地址
-					tx_id: props.parentForm.register_beneficiary_tx_id, // 多签提案编号
 				},
 			});
 		} else if (signer && signer.update_is_approved == true && signer.register_is_approved == false) {
@@ -407,6 +400,41 @@ const qtpushMessage = async (info) => {
 		ElMessage.error(error.msg);
 	}
 };
+const morePushMessage = async (info) => {
+	try {
+		const res = await post(sessionStorage.getItem("network") + "/push_message", info);
+
+		numTimes.value += 1;
+		if (numTimes.value == 2) {
+			colse();
+			router.push({
+				path: "/prompt",
+				query: {
+					type: 2,
+					msgid: res.data.msg_cid,
+					gas: pushData.value,
+					sxf: buildData.value[0].value,
+					id: Route.query.id,
+					name: props.dialogName,
+				},
+			});
+		} else {
+			buildMessage({
+				from: addr.value,
+				miner_id: props.parentForm.miner_id,
+				msg_type: "multisigApprove",
+				params: {
+					tx_type: "registerBeneficiary",
+					msig_addr: props.parentForm.multi_sig_addr, //多签地址
+					tx_id: props.parentForm.register_beneficiary_tx_id, // 多签提案编号
+				},
+			});
+		}
+	} catch (error) {
+		loading.value = false;
+		ElMessage.error(error.msg);
+	}
+};
 const buildMessage = async (info) => {
 	try {
 		const res = await post(sessionStorage.getItem("network") + "/build_message", {
@@ -429,6 +457,8 @@ const buildMessage = async (info) => {
 		}
 		if (props.dialogName == "合约配置") {
 			pushMessage(res.data);
+		} else if (props.dialogName == "合约多签") {
+			morePushMessage(res.data);
 		} else {
 			qtpushMessage(res.data);
 		}
