@@ -95,6 +95,7 @@ const contractdetails = async () => {
 		Route.name == "contractDetail" && reload();
 	} catch (error) {
 		if (error.code == 404) {
+			store.state.headTittle = "合约配置";
 			router.push({ path: "/register", query: { show: "ture" } });
 			Route.name == "register" && reload();
 		} else if (error.code == 1101) {

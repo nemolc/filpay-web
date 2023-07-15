@@ -53,6 +53,9 @@ const Route = useRoute();
 const router = useRouter();
 const store = useStore();
 const addr = ref("");
+const isaddr = ref("");
+const isupaddr = ref("");
+const isregaddr = ref("");
 const new_addr = ref("");
 // f1ll5sbovf56rg3ba3keshbis7zahn3yurc3uj45y
 const addrs = ref([]);
@@ -271,16 +274,75 @@ const submit = async () => {
 			},
 		});
 	} else if (props.dialogName == "合约多签") {
-		buildMessage({
-			from: addr.value.trim(),
-			miner_id: props.parentForm.miner_id,
-			msg_type: "multisigApprove",
-			params: {
-				tx_type: "updateBeneficiary",
-				msig_addr: props.parentForm.multi_sig_addr, //多签地址
-				tx_id: props.parentForm.miner_id, // 多签提案编号
-			},
-		});
+		loading.value = false;
+		const signer = props.parentForm.signers.find((signer) => signer.addr === addr.value);
+
+		if (signer && signer.update_is_approved == true && signer.register_is_approved == true) {
+			ElMessage.warning("该地址已签名");
+			return;
+		} else if (signer && signer.update_is_approved == false && signer.register_is_approved == false) {
+			//false  false
+			buildMessage({
+				from: addr.value,
+				miner_id: props.parentForm.miner_id,
+				msg_type: "multisigApprove",
+				params: {
+					tx_type: "updateBeneficiary",
+					msig_addr: props.parentForm.multi_sig_addr, //多签地址
+					tx_id: props.parentForm.update_beneficiary_tx_id, // 多签提案编号
+				},
+			});
+			buildMessage({
+				from: addr.value,
+				miner_id: props.parentForm.miner_id,
+				msg_type: "multisigApprove",
+				params: {
+					tx_type: "registerBeneficiary",
+					msig_addr: props.parentForm.multi_sig_addr, //多签地址
+					tx_id: props.parentForm.register_beneficiary_tx_id, // 多签提案编号
+				},
+			});
+		} else if (signer && signer.update_is_approved == true && signer.register_is_approved == false) {
+			//true false
+			buildMessage({
+				from: addr.value,
+				miner_id: props.parentForm.miner_id,
+				msg_type: "multisigApprove",
+				params: {
+					tx_type: "registerBeneficiary",
+					msig_addr: props.parentForm.multi_sig_addr, //多签地址
+					tx_id: props.parentForm.register_beneficiary_tx_id, // 多签提案编号
+				},
+			});
+		} else {
+			//false  true
+			buildMessage({
+				from: addr.value,
+				miner_id: props.parentForm.miner_id,
+				msg_type: "multisigApprove",
+				params: {
+					tx_type: "updateBeneficiary",
+					msig_addr: props.parentForm.multi_sig_addr, //多签地址
+					tx_id: props.parentForm.update_beneficiary_tx_id, // 多签提案编号
+				},
+			});
+		}
+		loading.value = true;
+		// 多签逻辑
+		// 1.主页面搜索多签节点返回数据 code:1101
+		// 2.用户点击签名
+		// 3.用户输入钱包地址和私钥（或者助记词）
+		// 4.用户点击提交
+		// 5.检查钱包地址是否在 "signers"中，如果不在，返回报错 “钱包地址必须是多签签名地址”，否则进行下一步
+		// 6.检查该钱包地址对应的singers中，update_is_approved，register_is_approved参数，如果全为true.返回报错 "该地址已签名"，否则进行下一步
+		// 7.检查update_is_approved是否为false,如果为true->跳转到10步，否则进行下一步
+		// 8.构建“多签approve”消息,tx_type=updateBeneficiary,msgi_addr=multi_sig_addr,tx_id=update_beneficiary_tx_id
+		// 9.签名后发送，如果返回结果失败则报错，，否则进行下一步
+		// 10.检查register_is_approved是否为false,如果为true->跳转到13步，否则进行下一步
+		// 11.构建“多签approve”消息,tx_type=registerBeneficiary,msgi_addr=multi_sig_addr,tx_id=register_beneficiary_tx_id
+		// 12.签名后发送，如果返回结果失败则报错，否则进行下一步
+		// 13.显示gas费，消息链接页面
+		// gas费计算规则:第8步，和第11步构建的消息，返回的estimated_cost+value之和，如果有2个消息，就把两个只相加
 	}
 };
 onMounted(() => {});
@@ -383,7 +445,7 @@ function sumsSy() {
 		password.value = password2.value;
 		return;
 	} else if (password2.value.length > 20) {
-		const check = password2.value.toString().substr(10, 11);
+		const check = password2.value.toString().slice(11, 12);
 		if (check == "*") {
 			return;
 		}

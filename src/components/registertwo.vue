@@ -69,7 +69,13 @@
 					<div class="item border_bottom" v-for="(item, i) in form.signers" :key="i">
 						<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.addr }}</div>
 						<div>
-							<span>{{ item.update_is_approved == false ? "未签名" : "已签名" }}</span>
+							<span>{{
+								(item.update_is_approved == false && item.register_is_approved == false) ||
+								(item.update_is_approved == false && item.register_is_approved == true) ||
+								(item.update_is_approved == true && item.register_is_approved == false)
+									? "未签名"
+									: "已签名"
+							}}</span>
 						</div>
 					</div>
 				</div>

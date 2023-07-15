@@ -33,6 +33,7 @@ const searchValue = () => {
 		iptval = input.value.trim();
 		store.state.code = iptval;
 	} else {
+		store.state.headTittle = "合约配置";
 		router.push({ path: "/register", query: { show: "ture" } });
 		return;
 	}
