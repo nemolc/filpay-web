@@ -13,16 +13,19 @@
 					</ul>
 				</div>
 				<div class="modify">
-					<el-input v-model.trim="password" v-if="password_visible == true" placeholder="请输入私钥" style="width: 400px; margin-left: 137px"></el-input>
+					<el-input v-model.trim="password" v-if="password_visible == true"></el-input>
 					<el-input v-model.trim="password2" @blur="sumsSy" placeholder="请输入私钥" v-if="currencyActive == 0" style="width: 400px; margin-left: 137px"></el-input>
+
 					<el-input
-						v-model="passwordStr"
+						v-model="passwordStr2"
+						@blur="sumsCodes"
 						placeholder="请输入您的助记词，每个单词之间以空格分隔。如：tissue hunt hip theme pond abandon flavor hand decline miss fog junior"
 						type="textarea"
 						v-else
 						rows="5"
 						style="width: 400px; margin-left: 137px"
 					></el-input>
+					<el-input v-model="passwordStr" v-if="password_visible2 == true"></el-input>
 				</div>
 				<div class="tips" v-if="currencyActive != 0"><img src="../assets/w.png" />您也可以一次粘贴助记词</div>
 			</div>
@@ -68,7 +71,8 @@ var password_visible = ref(false);
 
 var password2 = ref("");
 // 7b2254797065223a22736563703235366b31222c22507269766174654b6579223a22544e457251396b384f6a676a69796e726738702b6e416b77585a7a4f364669785244496e6d676142324a343d227d
-const passwordStr = ref("");
+var passwordStr = ref("");
+var passwordStr2 = ref("");
 // tissue hunt hip theme pond abandon flavor hand decline miss fog junior
 const dialogVisible = ref(false);
 
@@ -123,12 +127,13 @@ const submit = async () => {
 		}
 		addrs.value = await Sigs.getAddressesByPrivateKey(addr_type, password._rawValue); //私钥
 	} else {
+		console.log(addr.value, passwordStr._rawValue);
 		if (!addr.value || !passwordStr.value) {
 			ElMessage.warning("钱包地址和助记词不能为空");
 			return;
 		}
 		// 将字符串转换为数组
-		addrs.value = await Sigs.getAddressByKeywords(addr_type, passwordStr.value.split(" ")); //助记词
+		addrs.value = await Sigs.getAddressByKeywords(addr_type, passwordStr.value.trim().split(" ")); //助记词
 	}
 	let newAdd = props.dialogName == "修改质押人地址" || props.dialogName == "修改收益人地址" ? props.parentForm.addr : addr.value;
 
@@ -471,10 +476,7 @@ const chooseCurrency = (i) => {
 	currencyActive.value = i;
 };
 function sumsSy() {
-	if (password2.value.length <= 20) {
-		password.value = password2.value;
-		return;
-	} else if (password2.value.length > 20) {
+	if (password2.value.length > 20) {
 		const check = password2.value.toString().slice(11, 12);
 		if (check == "*") {
 			return;
@@ -484,6 +486,25 @@ function sumsSy() {
 		const suffix = password2.value.toString().substr(password2.length - 10);
 		let middle = "******";
 		password2.value = prefix + middle + suffix;
+	}
+}
+function sumsCodes() {
+	let wordCodes = passwordStr2.value.trim();
+	passwordStr = JSON.parse(JSON.stringify(wordCodes));
+
+	if (wordCodes.length >= 20) {
+		const check = wordCodes.toString().slice(11, 12);
+		if (check == "*") {
+			return;
+		}
+		// 使用split()方法将句子拆分成单词数组
+		const words = wordCodes.split(" ");
+
+		// 获取第一个单词和最后一个单词并拼接起来
+		const firstWord = words[0];
+		const lastWord = words[words.length - 1];
+		let middle = "******";
+		passwordStr2.value = firstWord + middle + lastWord;
 	}
 }
 </script>
