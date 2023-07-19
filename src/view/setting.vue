@@ -1,7 +1,7 @@
 <template>
 	<el-container>
 		<el-container>
-			<el-aside width="200px">
+			<el-aside width="200px" v-if="activerouteType == 'register' || activerouteType == 'registertwo'">
 				<div class="aside">
 					<el-menu :default-active="activerouter" @select="handleOpen">
 						<div v-if="activerouteType == 'register'">

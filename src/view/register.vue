@@ -208,6 +208,27 @@ const form = reactive({
 		},
 	], //质押人信息
 });
+onMounted(() => {
+	systeminfo();
+});
+const systeminfo = async () => {
+	try {
+		const res = await get(`system_info`);
+		dataform.value = res.data.networks;
+		if (sessionStorage.getItem("network")) {
+			let info = dataform.value.filter((item) => item.name == sessionStorage.getItem("network"));
+			store.commit("set_headInfo", info[0]);
+			activeNetwork.value = sessionStorage.getItem("network");
+		} else {
+			activeNetwork.value = dataform.value[0].name;
+			store.commit("set_headInfo", dataform.value[0]);
+			sessionStorage.setItem("network", activeNetwork.value);
+		}
+	} catch (error) {
+		ElMessage.warning(error.msg);
+	}
+	// input.value=Route.query.id
+};
 function FilStrToAttoStr(value) {
 	if (typeof value !== "string") {
 		throw new Error("illegal parameter type:" + typeof value);
@@ -375,6 +396,8 @@ const setHeight = (type) => {
 };
 const submit = async () => {
 	if (form.checked == false) return ElMessage.warning("请勾选我已确认所有钱包为去中心化钱包地址");
+
+	if (new Date(form.date1) > new Date(form.date2)) return ElMessage.error("产出收益需晚于质押退还起始释放日期");
 	const valid = await target.value.validate();
 	if (valid) {
 		if (form.beneficiarys_allot_ratios.length > 0) {
@@ -383,7 +406,7 @@ const submit = async () => {
 			form.beneficiarys_allot_ratios.forEach((item) => {
 				item.ratio.trim() != "" && hasRatio.push(item.ratio);
 				sum += Number(FilStrToAttoStrAndNum(item.ratio));
-				form.sums = sum;
+				form.sums = sum / 10000 + "%";
 			});
 			if (sum != 1000000) {
 				ElMessage.warning("收益人比例总和需为100%，请重新分配");
@@ -395,7 +418,7 @@ const submit = async () => {
 			let sum = 0;
 			form.investors_allot_ratios.forEach((item) => {
 				sum += Number(FilStrToAttoStrAndNum(item.ratio));
-				form.sumsT = sum;
+				form.sumsT = sum / 10000 + "%";
 			});
 			if (sum != 1000000) {
 				ElMessage.warning("质押人比例总和需为100%，请重新分配");
