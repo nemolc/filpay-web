@@ -397,7 +397,7 @@ const setHeight = (type) => {
 const submit = async () => {
 	if (form.checked == false) return ElMessage.warning("请勾选我已确认所有钱包为去中心化钱包地址");
 
-	if (new Date(form.date1) > new Date(form.date2)) return ElMessage.error("产出收益需晚于质押退还起始释放日期");
+	if (new Date(form.date1) > new Date(form.date2)) return ElMessage.error("产出收益需早于质押退还起始释放日期");
 	const valid = await target.value.validate();
 	if (valid) {
 		if (form.beneficiarys_allot_ratios.length > 0) {

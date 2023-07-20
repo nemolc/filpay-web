@@ -1,87 +1,86 @@
 <template>
-	<div class="collapse" v-if="store.state.headTittle == '合约多签'" :class="show ? 'collapseHeight' : ''">
+	<div class="collapse collapseHeight">
 		<el-icon>
 			<bell />
 		</el-icon>
-		合约需要Owner角色全部签名才能正式生成，合约配置者默认已签名，
+		合约需要Owner角色全部签名才能正式生成，合约配置者默认已签名，无需重复签名.
 	</div>
 	<div class="container">
-		<div class="container-content">
-			<div class="formInfo" style="padding-bottom: 0">
-				<div class="item">
-					<div>节点编号</div>
-					<div>{{ form.miner_id }}</div>
+		<div class="formInfo" style="padding-bottom: 0">
+			<div class="item">
+				<div>节点编号</div>
+				<div>{{ form.miner_id }}</div>
+			</div>
+			<div class="item">
+				<div>Beneficiary权限参数</div>
+				<div>
+					<span>区块高度：{{ form.new_expiration }}</span> <span>授权截止期限：{{ form.date3 }}</span>
 				</div>
-				<div class="item">
-					<div>Beneficiary权限参数</div>
-					<div>
-						<span>区块高度：{{ form.new_expiration }}</span> <span>授权截止期限：{{ form.date3 }}</span>
-					</div>
+			</div>
+			<div class="item">
+				<div style="width: 100%">
+					<div style="width: 100%; margin-left: 200px; color: #000">提币额度上限：{{ form.new_quota / 10 ** 18 }}&nbsp;FIL</div>
 				</div>
-				<div class="item">
-					<div style="width: 100%">
-						<div style="width: 100%; margin-left: 200px; color: #606266">提币额度上限：{{ form.new_quota / 10 ** 18 }}&nbsp;FIL</div>
-					</div>
-				</div>
+			</div>
 
-				<div class="item">
-					<div>产出收益起始释放高度</div>
-					<div>{{ form.beneficiary_release_height }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;授权截止期限：{{ form.date1 }}</div>
-				</div>
-				<div class="item">
-					<div>质押退还起始释放高度</div>
-					<div>{{ form.invested_release_height }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;授权截止期限：{{ form.date2 }}</div>
-				</div>
+			<div class="item">
+				<div>产出收益起始释放高度</div>
+				<div>{{ form.beneficiary_release_height }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;授权截止期限：{{ form.date1 }}</div>
 			</div>
-			<div class="formInfo">
-				<div class="title">收益人信息（产出收益）</div>
-				<div class="item" v-for="(item, i) in form.beneficiarys_allot_ratios" :key="i">
-					<div>收益人{{ i + 1 }}</div>
-					<div>
-						<span>{{ item.addr ? item.addr : "未知" }}</span>
-						<span>占比：{{ item.ratio / 10000 }}%</span>
-					</div>
-				</div>
-				<!-- <div class="sum">
-					<span class="left_sum"> 合计： </span><span class="line_height">{{ form.sums }}</span>
-				</div> -->
-			</div>
-			<div class="formInfo" style="border: 0">
-				<div class="title">质押人信息（质押退还）</div>
-				<div class="item">
-					<div>质押币总额</div>
-					<div v-if="form.invested_funds">{{ form.invested_funds / 10 ** 18 }}</div>
-				</div>
-				<div class="item" v-for="(item, i) in form.investors_allot_ratios" :key="i">
-					<div>质押人{{ i + 1 }}</div>
-					<div>
-						<span>{{ item.addr ? item.addr : "未知" }}</span>
-						<span>占比：{{ item.ratio / 10000 }}%</span>
-					</div>
-				</div>
-				<!-- <div class="sum">
-					<span class="left_sum"> 合计： </span><span class="line_height">{{ form.sumsT }}</span>
-				</div> -->
-			</div>
-			<div class="formInfo" style="border: 1">
-				<div class="title">签名状态</div>
-				<div class="border_tab">
-					<div class="item border_bottom" v-for="(item, i) in form.signers" :key="i">
-						<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.addr }}</div>
-						<div>
-							<span>{{
-								(item.update_is_approved == false && item.register_is_approved == false) ||
-								(item.update_is_approved == false && item.register_is_approved == true) ||
-								(item.update_is_approved == true && item.register_is_approved == false)
-									? "未签名"
-									: "已签名"
-							}}</span>
-						</div>
-					</div>
-				</div>
-				<el-button @click="submit" class="submit">我是Owner多签集成员，立即签名</el-button>
+			<div class="item">
+				<div>质押退还起始释放高度</div>
+				<div>{{ form.invested_release_height }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;授权截止期限：{{ form.date2 }}</div>
 			</div>
 		</div>
+		<div class="formInfo">
+			<div class="title">收益人信息（产出收益）</div>
+			<div class="item" v-for="(item, i) in form.beneficiarys_allot_ratios" :key="i">
+				<div>收益人{{ i + 1 }}</div>
+				<div>
+					<span>{{ item.addr ? item.addr : "未知" }}</span>
+					<span>占比：{{ item.ratio / 10000 }}%</span>
+				</div>
+			</div>
+			<!-- <div class="sum">
+					<span class="left_sum"> 合计： </span><span class="line_height">{{ form.sums }}</span>
+				</div> -->
+		</div>
+		<div class="formInfo" style="border: 0">
+			<div class="title">质押人信息（质押退还）</div>
+			<div class="item">
+				<div>质押币总额</div>
+				<div v-if="form.invested_funds">{{ form.invested_funds / 10 ** 18 }}</div>
+			</div>
+			<div class="item" v-for="(item, i) in form.investors_allot_ratios" :key="i">
+				<div>质押人{{ i + 1 }}</div>
+				<div>
+					<span>{{ item.addr ? item.addr : "未知" }}</span>
+					<span>占比：{{ item.ratio / 10000 }}%</span>
+				</div>
+			</div>
+			<!-- <div class="sum">
+					<span class="left_sum"> 合计： </span><span class="line_height">{{ form.sumsT }}</span>
+				</div> -->
+		</div>
+		<div class="voteResult">
+			<div>
+				签名状态<span>({{ signedCount }}/ {{ form.signers.length }})</span>
+			</div>
+			<ul>
+				<li v-for="(item, i) in form.signers" :key="i">
+					{{ item.addr
+					}}<span>{{
+						(item.update_is_approved == false && item.register_is_approved == false) ||
+						(item.update_is_approved == false && item.register_is_approved == true) ||
+						(item.update_is_approved == true && item.register_is_approved == false)
+							? "未签名"
+							: "已签名"
+					}}</span>
+				</li>
+			</ul>
+		</div>
+		<el-button @click="submit" class="submit">我是Owner多签集成员，立即签名</el-button>
+
 		<signature :dialogName="'合约多签'" :parentForm="form" v-model:show="visible"></signature>
 	</div>
 </template>
@@ -149,6 +148,7 @@ const props = defineProps({
 const getDate1 = ref("");
 const getDate2 = ref("");
 const getDate3 = ref("");
+const signedCount = ref("");
 const visible_resgister = ref(false);
 const dataform = ref("");
 const emit = defineEmits(["update:show"]);
@@ -180,6 +180,13 @@ const contractdetails = async () => {
 		form.multi_sig_addr = res.data.multi_sig_addr;
 		form.update_beneficiary_tx_id = res.data.update_beneficiary_tx_id;
 		form.register_beneficiary_tx_id = res.data.register_beneficiary_tx_id;
+		signedCount = form.signers.reduce((count, item) => {
+			if (item.update_is_approved && item.register_is_approved) {
+				return count + 1;
+			} else {
+				return count;
+			}
+		}, 0);
 	} catch (error) {
 		if (error.code == 1101) {
 			const { start_at, block_delay_secs } = store.state.headInfo;
@@ -203,6 +210,7 @@ const contractdetails = async () => {
 		}
 	}
 };
+
 function submit() {
 	visible.value = true;
 }
@@ -476,6 +484,29 @@ contractdetails();
 }
 </style>
 <style lang="less" scoped>
+.collapse {
+	font-size: 16px;
+	background: #dbefff;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: absolute;
+	top: 60px;
+	left: 200px;
+	z-index: 10;
+	width: calc(100% - 200px);
+	height: 0;
+	overflow: hidden;
+	transition: height 0.2s;
+
+	i {
+		margin-right: 5px;
+	}
+}
+.collapseHeight {
+	height: 60px !important;
+	border: 1px solid #0090ff;
+}
 .vote {
 	width: 560px;
 	border: 1px solid #d3d6d8;
@@ -670,7 +701,7 @@ contractdetails();
 	}
 }
 .border_tab {
-	width: 500px;
+	width: 800px;
 	border: 1px solid #acacac;
 }
 .border_bottom {

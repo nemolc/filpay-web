@@ -1,7 +1,17 @@
 <template>
 	<el-container>
 		<el-container>
-			<el-aside width="200px" v-if="activerouteType == 'register' || activerouteType == 'registertwo'">
+			<el-aside
+				width="200px"
+				v-if="
+					activerouteType == 'register' ||
+					activerouteType == 'registertwo' ||
+					activerouteType == 'contractDetail' ||
+					activerouteType == 'initiateProposal' ||
+					activerouteType == 'viewProposal' ||
+					activerouteType == 'withdrawalCurrency'
+				"
+			>
 				<div class="aside">
 					<el-menu :default-active="activerouter" @select="handleOpen">
 						<div v-if="activerouteType == 'register'">
@@ -28,6 +38,12 @@
 							</el-sub-menu>
 						</div>
 						<div v-else>
+							<el-menu-item index="/registertwo">
+								<el-icon>
+									<document />
+								</el-icon>
+								<template #title>合约多签</template>
+							</el-menu-item>
 							<el-menu-item index="/contractDetail">
 								<img src="@/assets/znhy1.png" alt="" v-if="activerouter == '/contractDetail'" />
 								<img src="@/assets/znhy.png" alt="" v-else />
@@ -76,6 +92,7 @@ const activename = reactive({
 });
 const activerouter = ref(Route.path);
 const activerouteType = ref(Route.meta.type);
+
 const handleOpen = (url) => {
 	if (url == Route.path) {
 		datakey.value = Date.now();
@@ -92,6 +109,7 @@ watch(
 		activerouter.value = newValue.path;
 		store.commit("set_activename", newValue.meta.title);
 		activerouteType.value = newValue.meta.type;
+		console.log("123", activerouteType);
 	},
 	{ immediate: true }
 );
