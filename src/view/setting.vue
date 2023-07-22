@@ -1,81 +1,69 @@
 <template>
 	<el-container>
-		<el-container>
-			<el-aside
-				width="200px"
-				v-if="
-					activerouteType == 'register' ||
-					activerouteType == 'registertwo' ||
-					activerouteType == 'contractDetail' ||
-					activerouteType == 'initiateProposal' ||
-					activerouteType == 'viewProposal' ||
-					activerouteType == 'withdrawalCurrency'
-				"
-			>
-				<div class="aside">
-					<el-menu :default-active="activerouter" @select="handleOpen">
-						<div v-if="activerouteType == 'register'">
-							<el-menu-item index="/register">
+		<el-aside width="200px">
+			<div class="aside" v-if="activerouter != '/prompt'">
+				<el-menu :default-active="activerouter" @select="handleOpen">
+					<div v-if="activerouteType == 'register'">
+						<el-menu-item index="/register">
+							<el-icon>
+								<document />
+							</el-icon>
+							<template #title>{{ store.state.headTittle }}</template>
+						</el-menu-item>
+					</div>
+					<div v-else-if="activerouteType == 'documents'">
+						<el-sub-menu index="1">
+							<template #title>
 								<el-icon>
 									<document />
 								</el-icon>
-								<template #title>{{ store.state.headTittle }}</template>
-							</el-menu-item>
-						</div>
-						<div v-else-if="activerouteType == 'documents'">
-							<el-sub-menu index="1">
-								<template #title>
-									<el-icon>
-										<document />
-									</el-icon>
-									<span>说明文档</span>
-								</template>
-								<el-menu-item-group>
-									<el-menu-item index="/documents/FILPAY"><b :class="activerouter == '/documents/FILPAY' ? 'chooseColor' : ''"></b>关于FILPAY</el-menu-item>
-									<!-- <el-menu-item index="/documents/questions"><b
+								<span>说明文档</span>
+							</template>
+							<el-menu-item-group>
+								<el-menu-item index="/documents/FILPAY"><b :class="activerouter == '/documents/FILPAY' ? 'chooseColor' : ''"></b>关于FILPAY</el-menu-item>
+								<!-- <el-menu-item index="/documents/questions"><b
                       :class="activerouter == '/documents/questions' ? 'chooseColor' : ''"></b>常见问题</el-menu-item> -->
-								</el-menu-item-group>
-							</el-sub-menu>
-						</div>
-						<div v-else>
-							<el-menu-item index="/registertwo">
-								<el-icon>
-									<document />
-								</el-icon>
-								<template #title>合约多签</template>
-							</el-menu-item>
-							<el-menu-item index="/contractDetail">
-								<img src="@/assets/znhy1.png" alt="" v-if="activerouter == '/contractDetail'" />
-								<img src="@/assets/znhy.png" alt="" v-else />
-								<template #title>合约详情</template>
-							</el-menu-item>
-							<el-sub-menu index="2">
-								<template #title>
-									<!-- <img src="@/assets/dqta1.png" alt="" v-if="activerouter=='/contractDetail'" />
+							</el-menu-item-group>
+						</el-sub-menu>
+					</div>
+					<div v-else>
+						<el-menu-item index="/registertwo">
+							<el-icon>
+								<document />
+							</el-icon>
+							<template #title>合约多签</template>
+						</el-menu-item>
+						<el-menu-item index="/contractDetail">
+							<img src="@/assets/znhy1.png" alt="" v-if="activerouter == '/contractDetail'" />
+							<img src="@/assets/znhy.png" alt="" v-else />
+							<template #title>合约详情</template>
+						</el-menu-item>
+						<el-sub-menu index="2">
+							<template #title>
+								<!-- <img src="@/assets/dqta1.png" alt="" v-if="activerouter=='/contractDetail'" />
                 <img src="@/assets/dqta.png" alt="" v-else /> -->
-									<img src="@/assets/dqta.png" alt="" />
-									<span>合约变更</span>
-								</template>
-								<el-menu-item-group>
-									<el-menu-item index="/initiateProposal"><b :class="activerouter == '/initiateProposal' ? 'chooseColor' : ''"></b>发起提案</el-menu-item>
-									<el-menu-item index="/viewProposal"><b :class="activerouter == '/viewProposal' ? 'chooseColor' : ''"></b>查看提案</el-menu-item>
-								</el-menu-item-group>
-							</el-sub-menu>
-							<el-menu-item index="/withdrawalCurrency">
-								<img src="@/assets/fqta1.png" alt="" v-if="activerouter == '/withdrawalCurrency'" />
-								<img src="@/assets/fqta.png" alt="" v-else />
-								<template #title>节点提币</template>
-							</el-menu-item>
-						</div>
-					</el-menu>
-				</div>
-			</el-aside>
-			<el-container>
-				<el-main>
-					<div v-text="activename.name" style="font-size: 18px"></div>
-					<router-view :key="datakey" style="margin-top: 26px"> </router-view>
-				</el-main>
-			</el-container>
+								<img src="@/assets/dqta.png" alt="" />
+								<span>合约变更</span>
+							</template>
+							<el-menu-item-group>
+								<el-menu-item index="/initiateProposal"><b :class="activerouter == '/initiateProposal' ? 'chooseColor' : ''"></b>发起提案</el-menu-item>
+								<el-menu-item index="/viewProposal"><b :class="activerouter == '/viewProposal' ? 'chooseColor' : ''"></b>查看提案</el-menu-item>
+							</el-menu-item-group>
+						</el-sub-menu>
+						<el-menu-item index="/withdrawalCurrency">
+							<img src="@/assets/fqta1.png" alt="" v-if="activerouter == '/withdrawalCurrency'" />
+							<img src="@/assets/fqta.png" alt="" v-else />
+							<template #title>节点提币</template>
+						</el-menu-item>
+					</div>
+				</el-menu>
+			</div>
+		</el-aside>
+		<el-container>
+			<el-main>
+				<div v-text="activename.name" style="font-size: 18px"></div>
+				<router-view :key="datakey" style="margin-top: 26px"> </router-view>
+			</el-main>
 		</el-container>
 	</el-container>
 </template>
@@ -109,7 +97,8 @@ watch(
 		activerouter.value = newValue.path;
 		store.commit("set_activename", newValue.meta.title);
 		activerouteType.value = newValue.meta.type;
-		console.log("123", activerouteType);
+		console.log("111", activerouter);
+		console.log("222", activerouteType);
 	},
 	{ immediate: true }
 );
