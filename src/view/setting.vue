@@ -97,8 +97,6 @@ watch(
 		activerouter.value = newValue.path;
 		store.commit("set_activename", newValue.meta.title);
 		activerouteType.value = newValue.meta.type;
-		console.log("111", activerouter);
-		console.log("222", activerouteType);
 	},
 	{ immediate: true }
 );
