@@ -27,12 +27,6 @@
 						</el-sub-menu>
 					</div>
 					<div v-else>
-						<el-menu-item index="/registertwo">
-							<el-icon>
-								<document />
-							</el-icon>
-							<template #title>合约多签</template>
-						</el-menu-item>
 						<el-menu-item index="/contractDetail">
 							<img src="@/assets/znhy1.png" alt="" v-if="activerouter == '/contractDetail'" />
 							<img src="@/assets/znhy.png" alt="" v-else />

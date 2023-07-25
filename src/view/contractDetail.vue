@@ -7,7 +7,7 @@
 					<div>{{ dataform.miner_id }}</div>
 				</div>
 				<div class="item">
-					<div>质押总额</div>
+					<div>质押池</div>
 					<div v-if="dataform.invested_funds">{{ convert_fil(dataform.invested_funds) }}</div>
 				</div>
 				<div class="item">
@@ -40,7 +40,7 @@
 			<div class="formInfo" style="border: 0">
 				<div class="title">质押人信息</div>
 				<div class="item">
-					<div>质押币总数</div>
+					<div>质押池总额</div>
 					<div v-if="dataform.invested_funds">{{ convert_fil(dataform.invested_funds) }}</div>
 				</div>
 				<div class="item" v-for="(item, i) in dataform.investors_info" :key="i">

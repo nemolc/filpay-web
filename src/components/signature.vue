@@ -483,7 +483,7 @@ function sumsSy() {
 		}
 		password = JSON.parse(JSON.stringify(password2));
 		const prefix = password2.value.toString().substr(0, 10);
-		const suffix = password2.value.toString().substr(password2.length - 10);
+		const suffix = password2.value.toString().substr(-10);
 		let middle = "******";
 		password2.value = prefix + middle + suffix;
 	}

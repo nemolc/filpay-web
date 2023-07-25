@@ -1,19 +1,21 @@
 <template>
 	<div class="container">
-		<div class="home">
-			<div>
-				<div class="title"><img src="@/assets/logo.png" /></div>
-				<div style="color: #828384; font-size: 22px; letter-spacing: 2px">您放心的合约支付管家</div>
+		<div class="container">
+			<div class="home">
 				<div>
-					<el-input v-model="input" @keyup.enter="searchValue" placeholder="输入节点号查看或配置" class="searchInput">
-						<template #suffix>
-							<el-icon style="font-size: 26px" @click="searchValue">
-								<search />
-							</el-icon>
-						</template>
-					</el-input>
+					<div class="title"><img src="@/assets/logo.png" /></div>
+					<div style="color: #828384; font-size: 22px; letter-spacing: 2px">您放心的合约支付管家</div>
+					<div>
+						<el-input v-model="input" @keyup.enter="searchValue" placeholder="输入节点号查看或配置" class="searchInput">
+							<template #suffix>
+								<el-icon style="font-size: 26px" @click="searchValue">
+									<search />
+								</el-icon>
+							</template>
+						</el-input>
+					</div>
+					<div class="register">更多操作请查阅<span @click="register">说明文档</span></div>
 				</div>
-				<div class="register">更多操作请查阅<span @click="register">说明文档</span></div>
 			</div>
 		</div>
 	</div>

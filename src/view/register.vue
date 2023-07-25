@@ -12,13 +12,16 @@
 		合约需要Owner角色全部签名才能正式生成，合约配置者默认已签名，
 	</div>
 	<div class="container">
-		<div class="tops"><img src="@/assets/zjc.png" alt="" />注：合约配置仅OWNER角色可执行。钱包地址需使用去中心化钱包地址（持有私钥/助记词），交易所地址不可使用。</div>
+		<div class="tops">
+			<img src="@/assets/zjc.png" alt="" />注：合约配置需由OWNER角色提交（多签
+			OWNER地址需由其中之一提交，依次完成签名）方可执行。。钱包地址需使用去中心化钱包地址（持有私钥/助记词），交易所地址不可使用。
+		</div>
 		<div class="formInfo">
 			<el-form :model="form" ref="target" :rules="rules" label-position="left" label-width="180px" class="ruleForm" :hide-required-asterisk="true">
 				<el-form-item label="节点编号" prop="miner_id">
 					<el-input v-model="form.miner_id" placeholder="请输入节点编号" style="width: 400px"></el-input>
 				</el-form-item>
-				<el-form-item label="Beneficiary地址" prop="new_expiration">
+				<el-form-item label="Beneficiary授权参数" prop="new_expiration">
 					<el-input v-model="form.new_expiration" placeholder="请输入区块高度" @change="FilStrToAttoStr(form.new_expiration)" @blur="getTime(form.new_expiration, 3)" style="width: 180px"></el-input>
 					<img src="@/assets/change.png" alt="" />
 					<el-date-picker v-model="form.date3" type="datetime" @change="setHeight(3)" placeholder="请输入授权截止期限" style="width: 180px"> </el-date-picker>
@@ -104,7 +107,7 @@
 					</div>
 				</div>
 				<div class="title">质押人信息（质押退还）</div>
-				<el-form-item label="质押币总额" prop="invested_funds">
+				<el-form-item label="质押池总额" prop="invested_funds">
 					<el-input style="width: 400px" v-model="form.invested_funds" @change="FilStrToAttoStr(form.invested_funds)" placeholder="请输入总质押币">
 						<template #suffix>
 							<span>FIL</span>
@@ -225,7 +228,7 @@ const systeminfo = async () => {
 			sessionStorage.setItem("network", activeNetwork.value);
 		}
 	} catch (error) {
-		ElMessage.warning(error.msg);
+		// ElMessage.warning(error.msg);
 	}
 	// input.value=Route.query.id
 };
