@@ -15,7 +15,7 @@
 					</div>
 					<div class="item">
 						<div>
-							<div style="margin-left: 200px; color: #606266">提币额度上限：{{ props.parentForm2.new_quota }}&nbsp;FIL</div>
+							<div style="margin-left: 180px; color: #606266">提币额度上限：{{ props.parentForm2.new_quota }}&nbsp;FIL</div>
 						</div>
 					</div>
 
@@ -33,7 +33,7 @@
 					<div class="item" v-for="(item, i) in props.parentForm2.beneficiarys_allot_ratios" :key="i">
 						<div>收益人{{ i + 1 }}</div>
 						<div>
-							<span>{{ item.addr ? item.addr : "未知" }}</span>
+							<span style="margin-left: 0;margin-right 10px;">{{ item.addr ? item.addr : "未知" }}</span>
 							<span>占比：{{ item.ratio }}%</span>
 						</div>
 					</div>
@@ -44,13 +44,13 @@
 				<div class="formInfo" style="border: 0">
 					<div class="title">质押人信息（质押退还）</div>
 					<div class="item">
-						<div>质押币总额</div>
-						<div v-if="props.parentForm2.invested_funds">{{ convert_fil(props.parentForm2.invested_funds) }}</div>
+						<div>质押池总额</div>
+						<div v-if="props.parentForm2.invested_funds">{{ props.parentForm2.invested_funds }}</div>
 					</div>
 					<div class="item" v-for="(item, i) in props.parentForm2.investors_allot_ratios" :key="i">
 						<div>质押人{{ i + 1 }}</div>
 						<div>
-							<span>{{ item.addr ? item.addr : "未知" }}</span>
+							<span style="margin-left: 0;margin-right 10px;">{{ item.addr ? item.addr : "未知" }}</span>
 							<span>占比：{{ item.ratio }}%</span>
 						</div>
 					</div>
@@ -132,7 +132,7 @@ const colse = () => {
 <style lang="less" scoped>
 .left_sum {
 	float: left;
-	margin-left: 520px;
+	margin-left: 180px;
 }
 .line_height {
 	line-height: 22px;

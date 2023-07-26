@@ -14,7 +14,7 @@
 	<div class="container">
 		<div class="tops">
 			<img src="@/assets/zjc.png" alt="" />注：合约配置需由OWNER角色提交（多签
-			OWNER地址需由其中之一提交，依次完成签名）方可执行。。钱包地址需使用去中心化钱包地址（持有私钥/助记词），交易所地址不可使用。
+			OWNER地址需由其中之一提交，依次完成签名）方可执行。钱包地址需使用去中心化钱包地址（持有私钥/助记词），交易所地址不可使用。
 		</div>
 		<div class="formInfo">
 			<el-form :model="form" ref="target" :rules="rules" label-position="left" label-width="180px" class="ruleForm" :hide-required-asterisk="true">

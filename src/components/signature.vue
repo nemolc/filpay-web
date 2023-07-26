@@ -19,7 +19,7 @@
 					<el-input
 						v-model="passwordStr2"
 						@blur="sumsCodes"
-						placeholder="请输入您的助记词，每个单词之间以空格分隔。如：tissue hunt hip theme pond abandon flavor hand decline miss fog junior"
+						placeholder="请输入您的助记词，每个单词之间以空格分隔。如：tissue ****** junior"
 						type="textarea"
 						v-else
 						rows="5"
@@ -492,7 +492,7 @@ function sumsCodes() {
 	let wordCodes = passwordStr2.value.trim();
 	passwordStr = JSON.parse(JSON.stringify(wordCodes));
 
-	if (wordCodes.length >= 20) {
+	if (wordCodes.length > 5) {
 		const check = wordCodes.toString().slice(11, 12);
 		if (check == "*") {
 			return;
