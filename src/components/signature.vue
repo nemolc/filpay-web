@@ -120,20 +120,18 @@ const colse = () => {
 };
 const submit = async () => {
 	if (currencyActive.value == 0) {
-		console.log(addr.value, password._rawValue);
 		if (!addr.value || !password) {
 			ElMessage.warning("钱包地址和私钥签名不能为空");
 			return;
 		}
 		addrs.value = await Sigs.getAddressesByPrivateKey(addr_type, password._rawValue); //私钥
 	} else {
-		console.log(addr.value, passwordStr._rawValue);
 		if (!addr.value || !passwordStr.value) {
 			ElMessage.warning("钱包地址和助记词不能为空");
 			return;
 		}
 		// 将字符串转换为数组
-		addrs.value = await Sigs.getAddressByKeywords(addr_type, passwordStr.value.trim().split(" ")); //助记词
+		addrs.value = await Sigs.getAddressByKeywords(addr_type, passwordStr.value.split(" ")); //助记词
 	}
 	let newAdd = props.dialogName == "修改质押人地址" || props.dialogName == "修改收益人地址" ? props.parentForm.addr : addr.value;
 
@@ -490,21 +488,21 @@ function sumsSy() {
 }
 function sumsCodes() {
 	let wordCodes = passwordStr2.value.trim();
-	passwordStr = JSON.parse(JSON.stringify(wordCodes));
-
-	if (wordCodes.length > 5) {
-		const check = wordCodes.toString().slice(11, 12);
-		if (check == "*") {
+	passwordStr.value = JSON.parse(JSON.stringify(wordCodes));
+	// 使用split()方法将句子拆分成单词数组
+	const words = wordCodes.split(" ");
+	if (words.length > 12) {
+		if (wordCodes.toString().indexOf("*") !== -1) {
 			return;
+		} else {
+			// 获取第一个单词和最后一个单词并拼接起来
+			const firstWord = words[0];
+			const lastWord = words[words.length - 1];
+			let middle = "******";
+			passwordStr2.value = firstWord + middle + lastWord;
 		}
-		// 使用split()方法将句子拆分成单词数组
-		const words = wordCodes.split(" ");
-
-		// 获取第一个单词和最后一个单词并拼接起来
-		const firstWord = words[0];
-		const lastWord = words[words.length - 1];
-		let middle = "******";
-		passwordStr2.value = firstWord + middle + lastWord;
+	} else {
+		ElMessage.error("助记词最少输入12个单词");
 	}
 }
 </script>

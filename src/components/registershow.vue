@@ -10,7 +10,7 @@
 					<div class="item">
 						<div>Beneficiary权限参数</div>
 						<div>
-							<span>区块高度：{{ props.parentForm2.new_expiration }}</span> <span>授权截止期限：{{ props.parentForm2.date3 }}</span>
+							<span style="margin-left: 0 !important">区块高度：{{ props.parentForm2.new_expiration }}</span> <span>授权截止期限：{{ props.parentForm2.date3 }}</span>
 						</div>
 					</div>
 					<div class="item">
@@ -32,9 +32,9 @@
 					<div class="title">收益人信息（产出收益）</div>
 					<div class="item" v-for="(item, i) in props.parentForm2.beneficiarys_allot_ratios" :key="i">
 						<div>收益人{{ i + 1 }}</div>
-						<div>
-							<span style="margin-left: 0;margin-right 10px;">{{ item.addr ? item.addr : "未知" }}</span>
-							<span>占比：{{ item.ratio }}%</span>
+						<div style="width: 65%">
+							<span style="margin-left: 0 !important;margin-right 10px;width:100%;float:left">{{ item.addr ? item.addr : "未知" }}</span>
+							<br /><span style="margin-left: 0 !important">占比：{{ item.ratio }}%</span>
 						</div>
 					</div>
 					<div class="sum">
@@ -49,9 +49,9 @@
 					</div>
 					<div class="item" v-for="(item, i) in props.parentForm2.investors_allot_ratios" :key="i">
 						<div>质押人{{ i + 1 }}</div>
-						<div>
-							<span style="margin-left: 0;margin-right 10px;">{{ item.addr ? item.addr : "未知" }}</span>
-							<span>占比：{{ item.ratio }}%</span>
+						<div style="width: 65%">
+							<span style="margin-left: 0 !important;margin-right 10px;width:100%;float:left">{{ item.addr ? item.addr : "未知" }}</span>
+							<br /><span style="margin-left: 0 !important">占比：{{ item.ratio }}%</span>
 						</div>
 					</div>
 					<div class="sum">
