@@ -11,6 +11,14 @@
 							<template #title>{{ store.state.headTittle }}</template>
 						</el-menu-item>
 					</div>
+					<div v-else-if="activerouteType == 'registertwo'">
+						<el-menu-item index="/registertwo">
+							<el-icon>
+								<document />
+							</el-icon>
+							<template #title>{{ store.state.headTittle }}</template>
+						</el-menu-item>
+					</div>
 					<div v-else-if="activerouteType == 'documents'">
 						<el-sub-menu index="1">
 							<template #title>
@@ -74,6 +82,7 @@ const activename = reactive({
 });
 const activerouter = ref(Route.path);
 const activerouteType = ref(Route.meta.type);
+console.log("activerouteType", activerouteType);
 
 const handleOpen = (url) => {
 	if (url == Route.path) {
