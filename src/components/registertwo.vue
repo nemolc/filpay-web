@@ -64,7 +64,7 @@
 		</div>
 		<div class="voteResult">
 			<div>
-				签名状态<span>({{ signedCount }}/ {{ form.signers.length }})</span>
+				签名状态<span>{{ signedCount }}</span>
 			</div>
 			<ul>
 				<li v-for="(item, i) in form.signers" :key="i">
@@ -148,7 +148,7 @@ const props = defineProps({
 const getDate1 = ref("");
 const getDate2 = ref("");
 const getDate3 = ref("");
-const signedCount = ref("1");
+const signedCount = ref("");
 const visible_resgister = ref(false);
 const dataform = ref("");
 const emit = defineEmits(["update:show"]);
@@ -180,13 +180,7 @@ const contractdetails = async () => {
 		form.multi_sig_addr = res.data.multi_sig_addr;
 		form.update_beneficiary_tx_id = res.data.update_beneficiary_tx_id;
 		form.register_beneficiary_tx_id = res.data.register_beneficiary_tx_id;
-		signedCount = form.signers.reduce((count, item) => {
-			if (item.update_is_approved && item.register_is_approved) {
-				return count + 1;
-			} else {
-				return count;
-			}
-		}, 0);
+		getResult(res.data.signers);
 	} catch (error) {
 		if (error.code == 1101) {
 			const { start_at, block_delay_secs } = store.state.headInfo;
@@ -205,12 +199,21 @@ const contractdetails = async () => {
 			form.multi_sig_addr = error.data.multi_sig_addr;
 			form.update_beneficiary_tx_id = error.data.update_beneficiary_tx_id;
 			form.register_beneficiary_tx_id = error.data.register_beneficiary_tx_id;
+			getResult(error.data.signers);
 		} else {
 			ElMessage.warning(error.msg);
 		}
 	}
 };
-
+function getResult(signers) {
+	let count = 0;
+	for (let signer of signers) {
+		if (signer.update_is_approved && signer.register_is_approved) {
+			count++;
+		}
+	}
+	return (signedCount = count + "/" + signers.length);
+}
 function submit() {
 	visible.value = true;
 }
