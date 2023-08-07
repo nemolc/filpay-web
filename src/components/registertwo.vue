@@ -64,7 +64,7 @@
 		</div>
 		<div class="voteResult">
 			<div>
-				签名状态<span>{{ signedCount }}</span>
+				签名状态<span>({{ signedCount }})</span>
 			</div>
 			<ul>
 				<li v-for="(item, i) in form.signers" :key="i">
@@ -212,7 +212,7 @@ function getResult(signers) {
 			count++;
 		}
 	}
-	return (signedCount = count + "/" + signers.length);
+	return (signedCount.value = count + "/" + signers.length);
 }
 function submit() {
 	visible.value = true;
